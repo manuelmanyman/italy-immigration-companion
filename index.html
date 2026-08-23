@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f766e" />
+    <title>Italy Immigration Companion</title>
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="icon" type="image/svg+xml" href="./icons/icon-192.svg" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <h1 data-i18n="app.title">Italy Immigration Companion</h1>
+      <div class="topbar-controls">
+        <label for="language-select" data-i18n="app.language">Language</label>
+        <select id="language-select" aria-label="Language selector">
+          <option value="en">English</option>
+          <option value="it">Italiano</option>
+          <option value="de">Deutsch</option>
+        </select>
+        <button id="install-btn" type="button" hidden data-i18n="app.install">Install</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel">
+        <h2 data-i18n="nextActions.title">Next 3 actions</h2>
+        <ul id="next-actions" class="stack"></ul>
+      </section>
+
+      <section class="panel">
+        <h2 data-i18n="checklist.title">Immigration checklist</h2>
+        <ul id="task-list" class="stack"></ul>
+      </section>
+
+      <section class="panel">
+        <h2 data-i18n="appointments.title">Appointments</h2>
+        <form id="appointment-form" class="form-grid">
+          <input name="title" required data-i18n-placeholder="appointments.fields.title" placeholder="Title" />
+          <input name="datetime" required type="datetime-local" />
+          <input name="office" required data-i18n-placeholder="appointments.fields.office" placeholder="Office" />
+          <input name="address" required data-i18n-placeholder="appointments.fields.address" placeholder="Address" />
+          <input name="mapsLink" type="url" data-i18n-placeholder="appointments.fields.mapsLink" placeholder="Google Maps link" />
+          <input name="phone" data-i18n-placeholder="appointments.fields.phone" placeholder="Phone" />
+          <input name="website" type="url" data-i18n-placeholder="appointments.fields.website" placeholder="Website" />
+          <input
+            name="reminderOffsets"
+            data-i18n-placeholder="appointments.fields.reminders"
+            placeholder="Reminder offsets (minutes, comma-separated)"
+          />
+          <button type="submit" data-i18n="appointments.add">Add appointment</button>
+          <button id="export-all-appointments" type="button" data-i18n="appointments.exportAll">Export all as ICS</button>
+        </form>
+        <ul id="appointments-list" class="stack"></ul>
+      </section>
+
+      <section class="panel">
+        <h2 data-i18n="documents.title">Document vault</h2>
+        <div id="document-dashboard" class="dashboard"></div>
+        <form id="document-form" class="form-grid">
+          <input name="title" required data-i18n-placeholder="documents.fields.title" placeholder="Document title" />
+          <input name="category" required data-i18n-placeholder="documents.fields.category" placeholder="Category" />
+          <input name="number" data-i18n-placeholder="documents.fields.number" placeholder="Document number" />
+          <input name="issueDate" type="date" data-i18n-placeholder="documents.fields.issueDate" />
+          <input name="expiryDate" required type="date" data-i18n-placeholder="documents.fields.expiryDate" />
+          <input name="notes" data-i18n-placeholder="documents.fields.notes" placeholder="Notes" />
+          <button type="submit" data-i18n="documents.add">Add document</button>
+        </form>
+        <ul id="documents-list" class="stack"></ul>
+      </section>
+    </main>
+
+    <footer>
+      <small data-i18n="app.disclaimer">Informational app only, not legal advice.</small>
+    </footer>
+
+    <script src="./app.js" defer></script>
+  </body>
+</html>

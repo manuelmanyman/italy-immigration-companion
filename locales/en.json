@@ -1,0 +1,78 @@
+{
+  "app": {
+    "title": "Italy Immigration Companion",
+    "language": "Language",
+    "install": "Install",
+    "disclaimer": "Informational app only. This is not legal advice."
+  },
+  "common": {
+    "delete": "Delete"
+  },
+  "checklist": {
+    "title": "Immigration checklist",
+    "tasks": {
+      "registerAddress": { "title": "Register your address (Anagrafe)", "detail": "Submit local residence declaration at your municipality." },
+      "applyTaxCode": { "title": "Apply for codice fiscale", "detail": "Get your Italian tax code from Agenzia delle Entrate." },
+      "bookResidencePermit": { "title": "Book permesso di soggiorno appointment", "detail": "Reserve and prepare the residence permit application packet." },
+      "healthcareEnrollment": { "title": "Enroll in healthcare", "detail": "Register with SSN/ASL if you qualify." },
+      "openBankAccount": { "title": "Open an Italian bank account", "detail": "Bring ID, tax code, and proof of address." }
+    }
+  },
+  "appointments": {
+    "title": "Appointments",
+    "add": "Add appointment",
+    "exportAll": "Export all as ICS",
+    "exportOne": "Export ICS",
+    "none": "None",
+    "maps": "Map",
+    "website": "Website",
+    "phone": "Phone",
+    "reminders": "Reminders",
+    "fields": {
+      "title": "Title",
+      "office": "Office",
+      "address": "Address",
+      "mapsLink": "Maps link",
+      "phone": "Phone",
+      "website": "Website",
+      "reminders": "Reminder offsets (minutes, comma-separated)"
+    }
+  },
+  "documents": {
+    "title": "Document vault",
+    "add": "Add document",
+    "number": "Number",
+    "issueDate": "Issue date",
+    "expiryDate": "Expiry date",
+    "notes": "Notes",
+    "expired": "Expired",
+    "expiringSoon": "Expiring in {days} days",
+    "valid": "Valid for {days} more days",
+    "expiryUnknown": "Expiry date unknown",
+    "dashboard": {
+      "total": "Total documents",
+      "expired": "Expired",
+      "expiring7": "Expiring in 7 days",
+      "expiring30": "Expiring in 30 days"
+    },
+    "fields": {
+      "title": "Document title",
+      "category": "Category",
+      "number": "Document number",
+      "issueDate": "Issue date",
+      "expiryDate": "Expiry date",
+      "notes": "Notes"
+    }
+  },
+  "nextActions": {
+    "title": "Next 3 actions",
+    "allClear": "All clear — no urgent actions right now.",
+    "rules": {
+      "expiredDoc": "Renew expired document: {doc}",
+      "expiringDoc": "Prepare renewal for {doc} (expires in {days} days)",
+      "noAppointments": "Book your next required office appointment.",
+      "addReminder": "Add reminders for upcoming appointment: {title}",
+      "pendingTask": "Complete checklist task: {task}"
+    }
+  }
+}
