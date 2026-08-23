@@ -8,15 +8,29 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <title>Italy Immigration Companion</title>
+    <script src="./version.js"></script>
     <script>
-      window.__APP_VERSION__ = '2026.08.23.1';
-      window.__BUILD_TIMESTAMP__ = '2026-08-23T09:56:24.166Z';
-      window.__ASSET_VERSION__ = '2026.08.23.1';
+      (function loadVersionedAssets() {
+        const version = window.__IIC_VERSION__ || {};
+        const assetVersion = encodeURIComponent(version.assetVersion || version.appVersion || 'dev');
+        const head = document.head;
+        const assets = [
+          ['link', { rel: 'manifest', href: `./manifest.json?v=${assetVersion}` }],
+          ['link', { rel: 'icon', type: 'image/svg+xml', href: `./icons/icon-192.svg?v=${assetVersion}` }],
+          ['link', { rel: 'apple-touch-icon', href: `./icons/icon-192.svg?v=${assetVersion}` }],
+          ['link', { rel: 'stylesheet', href: `./styles.css?v=${assetVersion}` }]
+        ];
+
+        assets.forEach(([tagName, attributes]) => {
+          const element = document.createElement(tagName);
+          Object.entries(attributes).forEach(([key, value]) => {
+            element.setAttribute(key, value);
+          });
+          head.appendChild(element);
+        });
+
+      })();
     </script>
-    <link rel="manifest" href="./manifest.json?v=2026.08.23.1" />
-    <link rel="icon" type="image/svg+xml" href="./icons/icon-192.svg?v=2026.08.23.1" />
-    <link rel="apple-touch-icon" href="./icons/icon-192.svg?v=2026.08.23.1" />
-    <link rel="stylesheet" href="./styles.css?v=2026.08.23.1" />
   </head>
   <body>
     <header class="topbar">
@@ -137,7 +151,14 @@
     <footer>
       <small data-i18n="app.disclaimer">Informational app only, not legal advice.</small>
     </footer>
-
-    <script src="./app.js?v=2026.08.23.1" defer></script>
+    <script>
+      (function loadAppScript() {
+        const version = window.__IIC_VERSION__ || {};
+        const assetVersion = encodeURIComponent(version.assetVersion || version.appVersion || 'dev');
+        const appScript = document.createElement('script');
+        appScript.src = `./app.js?v=${assetVersion}`;
+        document.body.appendChild(appScript);
+      })();
+    </script>
   </body>
 </html>

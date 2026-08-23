@@ -5,9 +5,10 @@ const STORAGE_KEYS = {
   legacyChecklist: 'iic_checklist_v1'
 };
 
-const APP_VERSION = window.__APP_VERSION__ || 'dev';
-const BUILD_TIMESTAMP = window.__BUILD_TIMESTAMP__ || '';
-const ASSET_VERSION = window.__ASSET_VERSION__ || APP_VERSION;
+const APP_METADATA = window.__IIC_VERSION__ || {};
+const APP_VERSION = APP_METADATA.appVersion || 'dev';
+const BUILD_TIMESTAMP = APP_METADATA.buildTimestamp || '';
+const ASSET_VERSION = APP_METADATA.assetVersion || APP_VERSION;
 
 const REMINDER_PRESETS = ['7d', '1d', '2h'];
 
@@ -619,7 +620,7 @@ function installPwaWiring() {
 }
 
 async function registerServiceWorker() {
-  const registration = await navigator.serviceWorker.register(versionedAssetUrl('./service-worker.js'));
+  const registration = await navigator.serviceWorker.register('./service-worker.js');
   swRegistration = registration;
 
   navigator.serviceWorker.addEventListener('controllerchange', () => {
@@ -736,7 +737,7 @@ function renderVersionDiagnostics() {
   const parts = [
     `${t('settings.serviceWorkerVersionLabel')}: ${swDiagnostics.version || t('settings.serviceWorkerUnavailable')}`,
     `${t('settings.serviceWorkerStatusLabel')}: ${getServiceWorkerStatusLabel(swDiagnostics)}`,
-    `${t('settings.buildTimestampLabel')}: ${formatDisplayTimestamp(swDiagnostics.buildTimestamp || BUILD_TIMESTAMP)}`
+    `${t('settings.buildTimestampLabel')}: ${swDiagnostics.buildTimestamp ? formatDisplayTimestamp(swDiagnostics.buildTimestamp) : t('settings.serviceWorkerUnavailable')}`
   ];
   swVersionInfo.textContent = parts.join(' · ');
 }

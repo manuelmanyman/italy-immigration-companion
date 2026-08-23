@@ -1,5 +1,7 @@
-const APP_VERSION = '2026.08.23.1';
-const BUILD_TIMESTAMP = '2026-08-23T09:56:24.166Z';
+importScripts('./version.js');
+
+const APP_VERSION = self.__IIC_VERSION__?.appVersion || 'dev';
+const BUILD_TIMESTAMP = self.__IIC_VERSION__?.buildTimestamp || '';
 const CACHE_PREFIX = 'iic-';
 const APP_SHELL_CACHE = `${CACHE_PREFIX}app-shell-${APP_VERSION}`;
 const RUNTIME_CACHE = `${CACHE_PREFIX}runtime-${APP_VERSION}`;
@@ -15,7 +17,7 @@ const VERSIONED_ASSETS = [
   './icons/icon-192.svg',
   './icons/icon-512.svg'
 ].map((path) => `${path}?v=${encodeURIComponent(APP_VERSION)}`);
-const APP_SHELL = ['./', './index.html', ...VERSIONED_ASSETS];
+const APP_SHELL = ['./', './index.html', './version.js', ...VERSIONED_ASSETS];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

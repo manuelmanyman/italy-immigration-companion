@@ -31,6 +31,7 @@ Mobile-first, multilingual (EN/IT/DE) PWA for the **Italy Registration Checklist
 - `/index.html` — app shell and sections
 - `/styles.css` — mobile-first styles, sticky bottom nav, touch targets
 - `/app.js` — checklist data, task workflow, reminder/timeline, documents, B2 tests, sync
+- `/version.js` — shared app/service-worker version metadata
 - `/locales/*.json` — EN/IT/DE translation keys
 - `/manifest.json`, `/service-worker.js`, `/icons/` — PWA assets
 
