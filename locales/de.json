@@ -3,12 +3,14 @@
     "title": "Italy Immigration Companion",
     "language": "Sprache",
     "install": "Installieren",
+    "themeLight": "Zum hellen Modus wechseln",
+    "themeDark": "Zum dunklen Modus wechseln",
     "disclaimer": "This app is for informational and organizational purposes only. It is not legal advice."
   },
   "nav": {
     "dashboard": "Dashboard",
     "tasks": "Checkliste",
-    "calendar": "Zeitplan",
+    "calendar": "Kalender",
     "documents": "Dokumente",
     "learning": "B2-Test",
     "settings": "Einstellungen"
@@ -76,8 +78,9 @@
     "markCompleted": "Aufgabe als erledigt markieren",
     "actions": {
       "checkDone": "Erledigt markieren",
-      "reminder": "Datum/Erinnerung",
+      "reminder": "Erinnerung/Datum setzen",
       "documents": "Dokumente hinzufügen/anzeigen",
+      "uploadDocument": "Dokument hochladen",
       "notes": "Notizen"
     },
     "sections": {
@@ -254,7 +257,8 @@
     }
   },
   "calendar": {
-    "title": "Fristen-Zeitplan",
+    "title": "Kalender-Erinnerungen",
+    "widgetTitle": "Bevorstehende Erinnerungen",
     "empty": "Noch keine Aufgabendaten.",
     "reminders": "Erinnerungen",
     "exportOne": "ICS exportieren",
@@ -289,6 +293,11 @@
     "viewAllSectionDocuments": "Alle Kategoriedokumente anzeigen",
     "fields": {
       "name": "Dokumentname"
+    },
+    "uploadChoices": {
+      "label": "Upload-Quelle",
+      "file": "Datei hochladen",
+      "camera": "Kameraaufnahme"
     },
     "messages": {
       "metadataOnly": "Dokument-Metadaten gespeichert.",
@@ -334,6 +343,9 @@
     "historyTitle": "Ergebnisverlauf",
     "noHistory": "Noch keine abgeschlossenen Tests.",
     "ready": "Bereit für eine B2-Simulation.",
+    "resultSummary": "Letztes Ergebnis",
+    "correct": "richtig",
+    "wrong": "falsch",
     "startPrompt": "Wähle einen Modus und starte einen zeitgesteuerten Test.",
     "activeMode": "Aktiver Modus",
     "modes": {

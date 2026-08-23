@@ -1,5 +1,6 @@
 const STORAGE_KEYS = {
   language: 'iic_language',
+  theme: 'iic_theme',
   state: 'iic_state_v3',
   legacyStateV2: 'iic_state_v2',
   legacyChecklist: 'iic_checklist_v1'
@@ -447,6 +448,7 @@ const DOC_TYPE_LABELS = {
 };
 
 let translations = {};
+let italianTranslations = {};
 let state = loadAppState();
 let deferredInstallPrompt;
 let supabaseClient = null;
@@ -460,6 +462,7 @@ let updateReady = false;
 let reloadOnControllerChange = false;
 
 const languageSelect = document.getElementById('language-select');
+const themeToggle = document.getElementById('theme-toggle');
 const installBtn = document.getElementById('install-btn');
 const updateBanner = document.getElementById('update-banner');
 const updateRefreshBtn = document.getElementById('update-refresh-btn');
@@ -468,6 +471,7 @@ const nextPendingList = document.getElementById('next-pending-list');
 const overallProgress = document.getElementById('overall-progress');
 const reminderAlerts = document.getElementById('reminder-alerts');
 const usefulLinksList = document.getElementById('useful-links-list');
+const calendarWidgetList = document.getElementById('calendar-widget-list');
 const timelineList = document.getElementById('timeline-list');
 const exportAllEventsBtn = document.getElementById('export-all-events');
 const documentsList = document.getElementById('documents-list');
@@ -518,8 +522,11 @@ init();
 
 async function init() {
   const savedLanguage = localStorage.getItem(STORAGE_KEYS.language) || 'en';
+  const savedTheme = localStorage.getItem(STORAGE_KEYS.theme) || 'dark';
+  applyTheme(savedTheme);
+  themeToggle?.addEventListener('click', toggleTheme);
   languageSelect.value = savedLanguage;
-  await setLanguage(savedLanguage);
+  await Promise.all([setLanguage(savedLanguage), loadItalianTranslations()]);
 
   languageSelect.addEventListener('change', async (event) => {
     await setLanguage(event.target.value);
@@ -909,6 +916,7 @@ async function setLanguage(language) {
   localStorage.setItem(STORAGE_KEYS.language, language);
   document.documentElement.lang = language;
   applyTranslations();
+  applyTheme(document.documentElement.dataset.theme || localStorage.getItem(STORAGE_KEYS.theme) || 'dark');
   renderAll();
 }
 
@@ -927,6 +935,7 @@ function renderAll() {
   renderProgress();
   renderNextPending();
   renderLinks();
+  renderCalendarWidget();
   renderTimeline();
   renderDocumentsHubFilters();
   renderDocumentsHub();
@@ -937,6 +946,31 @@ function renderAll() {
   renderVersionDiagnostics();
 }
 
+async function loadItalianTranslations() {
+  try {
+    const response = await fetch(versionedAssetUrl('./locales/it.json'), { cache: 'no-store' });
+    if (!response.ok) return;
+    italianTranslations = await response.json();
+  } catch {
+    italianTranslations = {};
+  }
+}
+
+function applyTheme(theme) {
+  const mode = theme === 'light' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = mode;
+  localStorage.setItem(STORAGE_KEYS.theme, mode);
+  if (themeToggle) {
+    themeToggle.textContent = mode === 'dark' ? '☀️' : '🌙';
+    themeToggle.setAttribute('aria-label', mode === 'dark' ? t('app.themeLight') : t('app.themeDark'));
+  }
+}
+
+function toggleTheme() {
+  const current = document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+}
+
 function renderTasks() {
   categoryList.innerHTML = '';
 
@@ -944,7 +978,8 @@ function renderTasks() {
     const { done, total, percent } = computeCategoryProgress(section);
     const wrapper = document.createElement('article');
     wrapper.className = `item section-card ${section.colorClass}`;
-    const sectionFilter = state.ui.sectionDocumentFilters[section.id] || { taskId: 'all', docType: 'all', expanded: false };
+    const sectionFilter = state.ui.sectionDocumentFilters[section.id]
+      || { taskId: 'all', docType: 'all', expanded: false };
 
     const subtasksHtml = section.subtasks.map((task) => {
       const taskState = ensureSubtaskState(task.id);
@@ -970,16 +1005,8 @@ function renderTasks() {
           </div>
           <p>${escapeHtml(t(task.detailKey))}</p>
           <div class="task-actions-row" role="group" aria-label="${escapeAttribute(t('tasks.taskActions'))}">
-            <button type="button" data-open-panel="check" data-task-panel="${task.id}">${t('tasks.actions.checkDone')}</button>
             <button type="button" data-open-panel="reminder" data-task-panel="${task.id}">${t('tasks.actions.reminder')}</button>
-            <button type="button" data-open-panel="documents" data-task-panel="${task.id}">${t('tasks.actions.documents')}</button>
-            <button type="button" data-open-panel="notes" data-task-panel="${task.id}">${t('tasks.actions.notes')}</button>
-          </div>
-          <div class="task-panel" data-panel-type="check" data-panel-owner="${task.id}" hidden>
-            <label class="inline-checkbox">
-              <input type="checkbox" data-task-toggle="${task.id}" ${taskState.done ? 'checked' : ''} />
-              <span>${t('tasks.markCompleted')}</span>
-            </label>
+            <button type="button" data-open-panel="documents" data-task-panel="${task.id}">${t('tasks.actions.uploadDocument')}</button>
           </div>
           <div class="task-panel" data-panel-type="reminder" data-panel-owner="${task.id}" hidden>
             <label>
@@ -995,8 +1022,13 @@ function renderTasks() {
             <form data-task-doc-form="${task.id}" class="form-grid compact">
               <input name="name" required placeholder="${escapeAttribute(t('documents.fields.name'))}" />
               <select name="docType">${buildDocumentTypeOptions(task.requiredDocs || [])}</select>
-              <input name="uploadFile" type="file" accept="image/*,.pdf" />
-              <input name="captureFile" type="file" accept="image/*" capture="environment" />
+              <div class="upload-choice" role="group" aria-label="${escapeAttribute(t('documents.uploadChoices.label'))}">
+                <button type="button" data-doc-source-button="file" class="is-active">${t('documents.uploadChoices.file')}</button>
+                <button type="button" data-doc-source-button="camera">${t('documents.uploadChoices.camera')}</button>
+              </div>
+              <input name="uploadSource" type="hidden" value="file" />
+              <input name="uploadFile" type="file" accept="image/*,.pdf" hidden />
+              <input name="captureFile" type="file" accept="image/*" capture="environment" hidden />
               <button type="submit">${t('documents.addForTask')}</button>
             </form>
             <ul class="stack mini-doc-list">${renderTaskDocumentItems(taskDocs)}</ul>
@@ -1027,7 +1059,10 @@ function renderTasks() {
         <div class="section-metrics">
           <span class="chip">${done}/${total}</span>
           <span class="chip">${percent}%</span>
-          <button type="button" data-section-toggle="${section.id}" aria-expanded="${sectionFilter.expanded ? 'true' : 'false'}">${sectionFilter.expanded ? t('tasks.closeCategory') : t('tasks.openCategory')}</button>
+          <button class="section-toggle" type="button" data-section-toggle="${section.id}" aria-expanded="${sectionFilter.expanded ? 'true' : 'false'}">
+            <span class="section-chevron" aria-hidden="true">${sectionFilter.expanded ? '▾' : '▸'}</span>
+            <span>${sectionFilter.expanded ? t('tasks.closeCategory') : t('tasks.openCategory')}</span>
+          </button>
         </div>
       </div>
       <progress max="100" value="${percent}" aria-label="${escapeAttribute(t(section.titleKey))} ${percent}%"></progress>
@@ -1106,6 +1141,26 @@ function renderLinks() {
       <p>${escapeHtml(t(item.subtitleKey))}</p>
       <p>${escapeHtml(t(item.descriptionKey))}</p>
       <a href="${escapeAttribute(item.url)}" target="_blank" rel="noopener">${t('links.open')}</a>
+    </li>
+  `).join('');
+}
+
+function renderCalendarWidget() {
+  if (!calendarWidgetList) return;
+  const events = getAllEvents()
+    .sort((a, b) => parseDate(a.datetime) - parseDate(b.datetime))
+    .slice(0, 4);
+
+  if (!events.length) {
+    calendarWidgetList.innerHTML = `<li class="item empty">${t('calendar.empty')}</li>`;
+    return;
+  }
+
+  calendarWidgetList.innerHTML = events.map((event) => `
+    <li class="item">
+      <strong>${escapeHtml(event.title)}</strong>
+      <p>${escapeHtml(event.context)}</p>
+      <p>${new Date(event.datetime).toLocaleDateString()}</p>
     </li>
   `).join('');
 }
@@ -1216,7 +1271,10 @@ function renderLearning() {
   if (!active) {
     learningSubmitBtn.hidden = true;
     learningTimerEl.textContent = '';
-    learningSummary.textContent = t('learning.ready');
+    const lastResult = state.learning.lastResult;
+    learningSummary.textContent = lastResult
+      ? `${t('learning.resultSummary')}: ${lastResult.correct} ${t('learning.correct')} · ${lastResult.wrong} ${t('learning.wrong')} (${lastResult.percent}%)`
+      : t('learning.ready');
     learningTestArea.innerHTML = `<p class="muted">${t('learning.startPrompt')}</p>`;
   } else {
     learningSubmitBtn.hidden = false;
@@ -1254,6 +1312,26 @@ function onCategoryClick(event) {
     const taskId = panelBtn.getAttribute('data-task-panel');
     const panel = panelBtn.getAttribute('data-open-panel');
     toggleTaskPanel(taskId, panel);
+    return;
+  }
+
+  const docSourceBtn = event.target.closest('[data-doc-source-button]');
+  if (docSourceBtn) {
+    const form = docSourceBtn.closest('form[data-task-doc-form]');
+    if (!form) return;
+    const source = docSourceBtn.getAttribute('data-doc-source-button') === 'camera' ? 'camera' : 'file';
+    const sourceInput = form.querySelector('input[name="uploadSource"]');
+    if (sourceInput) sourceInput.value = source;
+    form.querySelectorAll('[data-doc-source-button]').forEach((button) => {
+      button.classList.toggle('is-active', button === docSourceBtn);
+    });
+    const fileInput = form.querySelector('input[name="uploadFile"]');
+    const cameraInput = form.querySelector('input[name="captureFile"]');
+    if (source === 'camera') {
+      cameraInput?.click();
+    } else {
+      fileInput?.click();
+    }
     return;
   }
 
@@ -1341,13 +1419,22 @@ async function onCategorySubmit(event) {
   const name = (formData.get('name') || '').toString().trim();
   if (!name) return;
 
+  const uploadSource = (formData.get('uploadSource') || 'file').toString();
   const uploadFile = formData.get('uploadFile');
   const captureFile = formData.get('captureFile');
-  const file = uploadFile instanceof File && uploadFile.size > 0
-    ? uploadFile
-    : captureFile instanceof File && captureFile.size > 0
-      ? captureFile
-      : null;
+  let file = null;
+  if (uploadSource === 'camera') {
+    file = captureFile instanceof File && captureFile.size > 0 ? captureFile : null;
+  } else {
+    file = uploadFile instanceof File && uploadFile.size > 0 ? uploadFile : null;
+  }
+  if (!file) {
+    file = uploadFile instanceof File && uploadFile.size > 0
+      ? uploadFile
+      : captureFile instanceof File && captureFile.size > 0
+        ? captureFile
+        : null;
+  }
 
   const section = getSectionForTask(taskId);
   const documentEntry = {
@@ -1378,6 +1465,11 @@ async function onCategorySubmit(event) {
 
   state.documents.push(documentEntry);
   form.reset();
+  const sourceField = form.querySelector('input[name="uploadSource"]');
+  if (sourceField) sourceField.value = 'file';
+  form.querySelectorAll('[data-doc-source-button]').forEach((button) => {
+    button.classList.toggle('is-active', button.getAttribute('data-doc-source-button') === 'file');
+  });
   saveStateAndRender();
 }
 
@@ -1594,6 +1686,7 @@ function submitB2MockTest(reason) {
 
   const total = attempt.questions.length;
   const percent = total ? Math.round((correct / total) * 100) : 0;
+  const wrong = Math.max(0, total - correct);
 
   const historyEntry = {
     id: attempt.id,
@@ -1608,6 +1701,13 @@ function submitB2MockTest(reason) {
   };
 
   state.learning.history = [...(state.learning.history || []), historyEntry].slice(-30);
+  state.learning.lastResult = {
+    correct,
+    wrong,
+    total,
+    percent,
+    completedAt: historyEntry.completedAt
+  };
   state.learning.activeAttempt = null;
   saveStateAndRender();
 }
@@ -1615,8 +1715,8 @@ function submitB2MockTest(reason) {
 function renderLearningQuestions(attempt) {
   return attempt.questions.map((question, index) => `
     <fieldset class="item">
-      <legend>${index + 1}. ${escapeHtml(t(question.promptKey))}</legend>
-      <p class="muted">${escapeHtml(t(question.sectionTitleKey))}</p>
+      <legend>${index + 1}. ${escapeHtml(tItalian(question.promptKey))}</legend>
+      <p class="muted">${escapeHtml(tItalian(question.sectionTitleKey))}</p>
       ${(question.options || []).map((optionKey, optionIndex) => `
         <label>
           <input
@@ -1626,7 +1726,7 @@ function renderLearningQuestions(attempt) {
             value="${optionIndex}"
             ${(attempt.answers[question.id] || '') === String(optionIndex) ? 'checked' : ''}
           />
-          <span>${escapeHtml(t(optionKey))}</span>
+          <span>${escapeHtml(tItalian(optionKey))}</span>
         </label>
       `).join('')}
     </fieldset>
@@ -1859,7 +1959,7 @@ function loadAppState() {
     subtaskState: {},
     documents: [],
     reminders: { fired: {}, notificationPermission: 'default', updated_at: nowIso() },
-    learning: { history: [], activeAttempt: null, updated_at: nowIso() },
+    learning: { history: [], activeAttempt: null, lastResult: null, updated_at: nowIso() },
     settings: { workspaceId: 'default-workspace', updated_at: nowIso() },
     sync: { lastSyncedAt: '', updated_at: nowIso() },
     ui: { sectionDocumentFilters: {} },
@@ -1961,9 +2061,10 @@ function sanitizePayload(payload) {
       ? {
           history: safe.learningProgress.history || [],
           activeAttempt: null,
+          lastResult: null,
           updated_at: safe.learningProgress.updated_at || nowIso()
         }
-      : { history: [], activeAttempt: null, updated_at: nowIso() };
+      : { history: [], activeAttempt: null, lastResult: null, updated_at: nowIso() };
 
   return {
     version: 3,
@@ -1977,6 +2078,7 @@ function sanitizePayload(payload) {
     learning: {
       history: Array.isArray(learning.history) ? learning.history : [],
       activeAttempt: learning.activeAttempt || null,
+      lastResult: learning.lastResult && typeof learning.lastResult === 'object' ? learning.lastResult : null,
       updated_at: learning.updated_at || nowIso()
     },
     settings: safe.settings && typeof safe.settings === 'object'
@@ -2192,6 +2294,11 @@ function formatDisplayTimestamp(value) {
 function t(path) {
   const value = path.split('.').reduce((acc, key) => (acc && key in acc ? acc[key] : undefined), translations);
   return value ?? path;
+}
+
+function tItalian(path) {
+  const value = path.split('.').reduce((acc, key) => (acc && key in acc ? acc[key] : undefined), italianTranslations);
+  return value ?? t(path);
 }
 
 function loadJSON(key, fallback) {
