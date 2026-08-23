@@ -6,7 +6,12 @@
   --muted: #6b7280;
   --accent: #0f766e;
   --danger: #b91c1c;
+  --warning: #92400e;
   --border: #d1d5db;
+  --green-soft: #dcfce7;
+  --blue-soft: #dbeafe;
+  --yellow-soft: #fef9c3;
+  --red-soft: #fee2e2;
 }
 
 * {
@@ -15,15 +20,16 @@
 
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: Inter, Arial, sans-serif;
   background: var(--bg);
   color: var(--text);
+  line-height: 1.4;
 }
 
 .topbar {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 20;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -36,7 +42,7 @@ body {
 
 .topbar h1 {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.15rem;
 }
 
 .topbar-controls {
@@ -47,51 +53,63 @@ body {
 
 main {
   max-width: 980px;
-  margin: 1rem auto;
-  padding: 0 1rem 6rem;
+  margin: 0 auto;
+  padding: 1rem 0.75rem 6.5rem;
   display: grid;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .panel {
   background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 1rem;
+  border-radius: 12px;
+  padding: 0.9rem;
 }
 
 h2,
-h3 {
-  margin-top: 0;
+h3,
+h4 {
+  margin: 0 0 0.5rem;
 }
 
 .form-grid {
   display: grid;
-  gap: 0.5rem;
+  gap: 0.6rem;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.form-grid.compact {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+input,
+select,
+button,
+textarea,
+a {
+  font: inherit;
 }
 
 input,
 select,
 button,
 textarea {
-  font: inherit;
-  padding: 0.6rem;
+  padding: 0.72rem;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 10px;
   width: 100%;
+  background: #fff;
 }
 
 textarea {
-  min-height: 72px;
+  min-height: 90px;
   resize: vertical;
 }
 
 button {
-  background: #fff;
+  min-height: 48px;
   cursor: pointer;
-  min-height: 44px;
 }
 
 button:hover {
@@ -101,7 +119,8 @@ button:hover {
 button:focus-visible,
 input:focus-visible,
 select:focus-visible,
-textarea:focus-visible {
+textarea:focus-visible,
+a:focus-visible {
   outline: 3px solid #99f6e4;
   outline-offset: 1px;
 }
@@ -111,19 +130,14 @@ textarea:focus-visible {
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 0.5rem;
+  gap: 0.6rem;
 }
 
 .item {
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 0.75rem;
   background: #fff;
-}
-
-.item h3 {
-  margin: 0 0 0.25rem;
-  font-size: 1rem;
 }
 
 .item p {
@@ -131,57 +145,144 @@ textarea:focus-visible {
   color: var(--muted);
 }
 
-.item .danger {
-  color: var(--danger);
-  font-weight: 700;
-}
-
 .item-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-
-.dashboard {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.card {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0.75rem;
-  background: #fff;
+  gap: 0.45rem;
+  margin-top: 0.45rem;
 }
 
 .metric {
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 progress {
   width: 100%;
-  height: 0.75rem;
+  height: 0.8rem;
 }
 
-.category-header {
+.section-card.section-green {
+  border-left: 5px solid #16a34a;
+}
+
+.section-card.section-blue {
+  border-left: 5px solid #2563eb;
+}
+
+.section-card.section-yellow {
+  border-left: 5px solid #ca8a04;
+}
+
+.section-card.section-red {
+  border-left: 5px solid #dc2626;
+}
+
+.section-header {
   display: flex;
-  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.section-badge {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.section-metrics {
+  display: grid;
+  gap: 0.3rem;
+  justify-items: end;
+}
+
+.section-body {
+  margin-top: 0.7rem;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.task-card {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.task-card.is-complete {
+  background: #f0fdf4;
+}
+
+.task-head {
+  display: flex;
   justify-content: space-between;
   gap: 0.5rem;
-  margin-bottom: 0.5rem;
+  align-items: center;
 }
 
-.category-subtasks {
-  display: grid;
+.task-toggle {
+  display: flex;
+  align-items: flex-start;
   gap: 0.5rem;
 }
 
-.subtask-grid {
+.task-actions-row {
   display: grid;
-  gap: 0.4rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.task-panel {
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  padding: 0.6rem;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.inline-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.task-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.chip {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.18rem 0.6rem;
+  font-size: 0.78rem;
+  color: #374151;
+  background: #fff;
+}
+
+.chip-warning {
+  background: #fef3c7;
+  border-color: #f59e0b;
+  color: var(--warning);
+}
+
+.chip-danger {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: var(--danger);
+}
+
+.section-doc-center {
+  background: #f8fafc;
+}
+
+.section-doc-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mini-doc-list .item {
+  padding: 0.6rem;
 }
 
 .bottom-nav {
@@ -189,7 +290,7 @@ progress {
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 20;
+  z-index: 30;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 0.25rem;
@@ -199,9 +300,9 @@ progress {
 }
 
 .bottom-nav button {
-  min-height: 44px;
+  min-height: 48px;
   padding: 0.4rem;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
 }
 
 .bottom-nav button.active {
@@ -213,21 +314,35 @@ progress {
   color: var(--muted);
 }
 
+.danger {
+  color: var(--danger) !important;
+  font-weight: 700;
+}
+
 .empty {
   color: var(--muted);
   font-style: italic;
 }
 
 footer {
-  padding: 1rem 1rem 5rem;
+  padding: 0.8rem 1rem 5.8rem;
   text-align: center;
   color: var(--muted);
 }
 
-@media (max-width: 640px) {
+@media (max-width: 760px) {
   .topbar-controls {
     width: 100%;
     flex-wrap: wrap;
+  }
+
+  .section-header {
+    flex-direction: column;
+  }
+
+  .section-metrics {
+    justify-items: start;
+    width: 100%;
   }
 
   .bottom-nav {

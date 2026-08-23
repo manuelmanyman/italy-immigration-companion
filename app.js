@@ -1,6 +1,7 @@
 const STORAGE_KEYS = {
   language: 'iic_language',
-  state: 'iic_state_v2',
+  state: 'iic_state_v3',
+  legacyStateV2: 'iic_state_v2',
   legacyChecklist: 'iic_checklist_v1'
 };
 
@@ -8,37 +9,436 @@ const REMINDER_PRESETS = ['7d', '1d', '2h'];
 
 const CATEGORY_DEFINITIONS = [
   {
-    id: 'cat-address',
-    titleKey: 'tasks.categories.changeAddress.title',
+    id: 'sec-codice-fiscale',
+    badge: '🟩',
+    colorClass: 'section-green',
+    titleKey: 'tasks.sections.codiceFiscale.title',
+    subtitleKey: 'tasks.sections.codiceFiscale.subtitle',
     subtasks: [
-      { id: 'sub-address-docs', titleKey: 'tasks.subtasks.addressDocs.title', detailKey: 'tasks.subtasks.addressDocs.detail' },
-      { id: 'sub-address-appointment', titleKey: 'tasks.subtasks.addressAppointment.title', detailKey: 'tasks.subtasks.addressAppointment.detail' },
-      { id: 'sub-address-confirmation', titleKey: 'tasks.subtasks.addressConfirmation.title', detailKey: 'tasks.subtasks.addressConfirmation.detail' }
+      {
+        id: 'task-cf-appointment-booked',
+        titleKey: 'tasks.items.cfAppointmentBooked.title',
+        detailKey: 'tasks.items.cfAppointmentBooked.detail',
+        requiredDocs: ['appointment-confirmation', 'aa48-form']
+      },
+      {
+        id: 'task-cf-aa48-filled',
+        titleKey: 'tasks.items.cfAa48Filled.title',
+        detailKey: 'tasks.items.cfAa48Filled.detail',
+        requiredDocs: ['aa48-form']
+      },
+      {
+        id: 'task-cf-issued',
+        titleKey: 'tasks.items.cfIssued.title',
+        detailKey: 'tasks.items.cfIssued.detail',
+        requiredDocs: ['codice-fiscale-pdf']
+      }
     ]
   },
   {
-    id: 'cat-permesso',
-    titleKey: 'tasks.categories.permesso.title',
+    id: 'sec-your-residency',
+    badge: '🟦',
+    colorClass: 'section-blue',
+    titleKey: 'tasks.sections.yourResidency.title',
+    subtitleKey: 'tasks.sections.yourResidency.subtitle',
     subtasks: [
-      { id: 'sub-permesso-kit', titleKey: 'tasks.subtasks.permessoKit.title', detailKey: 'tasks.subtasks.permessoKit.detail' },
-      { id: 'sub-permesso-post', titleKey: 'tasks.subtasks.permessoPost.title', detailKey: 'tasks.subtasks.permessoPost.detail' },
-      { id: 'sub-permesso-questura', titleKey: 'tasks.subtasks.permessoQuestura.title', detailKey: 'tasks.subtasks.permessoQuestura.detail' }
+      {
+        id: 'task-your-residency-registered',
+        titleKey: 'tasks.items.yourResidencyRegistered.title',
+        detailKey: 'tasks.items.yourResidencyRegistered.detail',
+        requiredDocs: ['residency-request']
+      },
+      {
+        id: 'task-your-police-visit-completed',
+        titleKey: 'tasks.items.yourPoliceVisitCompleted.title',
+        detailKey: 'tasks.items.yourPoliceVisitCompleted.detail',
+        requiredDocs: ['police-visit-note']
+      },
+      {
+        id: 'task-your-residency-confirmed',
+        titleKey: 'tasks.items.yourResidencyConfirmed.title',
+        detailKey: 'tasks.items.yourResidencyConfirmed.detail',
+        requiredDocs: ['residency-certificate']
+      }
     ]
   },
   {
-    id: 'cat-marriage',
-    titleKey: 'tasks.categories.marriage.title',
+    id: 'sec-her-residency',
+    badge: '🟨',
+    colorClass: 'section-yellow',
+    titleKey: 'tasks.sections.herResidency.title',
+    subtitleKey: 'tasks.sections.herResidency.subtitle',
     subtasks: [
-      { id: 'sub-marriage-certificates', titleKey: 'tasks.subtasks.marriageCertificates.title', detailKey: 'tasks.subtasks.marriageCertificates.detail' },
-      { id: 'sub-marriage-appointment', titleKey: 'tasks.subtasks.marriageAppointment.title', detailKey: 'tasks.subtasks.marriageAppointment.detail' },
-      { id: 'sub-marriage-transcript', titleKey: 'tasks.subtasks.marriageTranscript.title', detailKey: 'tasks.subtasks.marriageTranscript.detail' }
+      {
+        id: 'task-her-cf-obtained',
+        titleKey: 'tasks.items.herCfObtained.title',
+        detailKey: 'tasks.items.herCfObtained.detail',
+        requiredDocs: ['codice-fiscale-pdf']
+      },
+      {
+        id: 'task-her-residency-submitted',
+        titleKey: 'tasks.items.herResidencySubmitted.title',
+        detailKey: 'tasks.items.herResidencySubmitted.detail',
+        requiredDocs: ['residency-request', 'rental-contract']
+      },
+      {
+        id: 'task-her-police-visit-completed',
+        titleKey: 'tasks.items.herPoliceVisitCompleted.title',
+        detailKey: 'tasks.items.herPoliceVisitCompleted.detail',
+        requiredDocs: ['police-visit-note']
+      },
+      {
+        id: 'task-her-residency-confirmed',
+        titleKey: 'tasks.items.herResidencyConfirmed.title',
+        detailKey: 'tasks.items.herResidencyConfirmed.detail',
+        requiredDocs: ['residency-certificate']
+      }
+    ]
+  },
+  {
+    id: 'sec-marriage-registration',
+    badge: '🟥',
+    colorClass: 'section-red',
+    titleKey: 'tasks.sections.marriageRegistration.title',
+    subtitleKey: 'tasks.sections.marriageRegistration.subtitle',
+    subtasks: [
+      {
+        id: 'task-marriage-michigan-certificate-received',
+        titleKey: 'tasks.items.marriageMichiganCertificateReceived.title',
+        detailKey: 'tasks.items.marriageMichiganCertificateReceived.detail',
+        requiredDocs: ['us-marriage-certificate']
+      },
+      {
+        id: 'task-marriage-translation-ready',
+        titleKey: 'tasks.items.marriageTranslationReady.title',
+        detailKey: 'tasks.items.marriageTranslationReady.detail',
+        requiredDocs: ['italian-translation-notarized']
+      },
+      {
+        id: 'task-marriage-apostille-obtained',
+        titleKey: 'tasks.items.marriageApostilleObtained.title',
+        detailKey: 'tasks.items.marriageApostilleObtained.detail',
+        requiredDocs: ['apostille']
+      },
+      {
+        id: 'task-marriage-submitted-comune',
+        titleKey: 'tasks.items.marriageSubmittedComune.title',
+        detailKey: 'tasks.items.marriageSubmittedComune.detail',
+        requiredDocs: ['submission-receipt']
+      },
+      {
+        id: 'task-marriage-apostille-delivered-comune',
+        titleKey: 'tasks.items.marriageApostilleDeliveredComune.title',
+        detailKey: 'tasks.items.marriageApostilleDeliveredComune.detail',
+        requiredDocs: ['apostille-delivery-proof']
+      },
+      {
+        id: 'task-marriage-registered-italy',
+        titleKey: 'tasks.items.marriageRegisteredItaly.title',
+        detailKey: 'tasks.items.marriageRegisteredItaly.detail',
+        requiredDocs: ['registration-confirmation']
+      },
+      {
+        id: 'task-marriage-extract-issued',
+        titleKey: 'tasks.items.marriageExtractIssued.title',
+        detailKey: 'tasks.items.marriageExtractIssued.detail',
+        requiredDocs: ['estratto-matrimonio']
+      }
+    ]
+  },
+  {
+    id: 'sec-permesso',
+    badge: '🟩',
+    colorClass: 'section-green',
+    titleKey: 'tasks.sections.permesso.title',
+    subtitleKey: 'tasks.sections.permesso.subtitle',
+    subtasks: [
+      {
+        id: 'task-permesso-application-submitted',
+        titleKey: 'tasks.items.permessoApplicationSubmitted.title',
+        detailKey: 'tasks.items.permessoApplicationSubmitted.detail',
+        requiredDocs: ['permesso-receipt']
+      },
+      {
+        id: 'task-permesso-fingerprints-completed',
+        titleKey: 'tasks.items.permessoFingerprintsCompleted.title',
+        detailKey: 'tasks.items.permessoFingerprintsCompleted.detail',
+        requiredDocs: ['fingerprint-appointment-proof']
+      },
+      {
+        id: 'task-permesso-apostille-delivered-questura',
+        titleKey: 'tasks.items.permessoApostilleDeliveredQuestura.title',
+        detailKey: 'tasks.items.permessoApostilleDeliveredQuestura.detail',
+        requiredDocs: ['apostille-delivery-proof']
+      },
+      {
+        id: 'task-permesso-approved',
+        titleKey: 'tasks.items.permessoApproved.title',
+        detailKey: 'tasks.items.permessoApproved.detail',
+        requiredDocs: ['permesso-approval']
+      },
+      {
+        id: 'task-permesso-card-received',
+        titleKey: 'tasks.items.permessoCardReceived.title',
+        detailKey: 'tasks.items.permessoCardReceived.detail',
+        requiredDocs: ['permesso-card']
+      }
+    ]
+  },
+  {
+    id: 'sec-after-permesso',
+    badge: '🟦',
+    colorClass: 'section-blue',
+    titleKey: 'tasks.sections.afterPermesso.title',
+    subtitleKey: 'tasks.sections.afterPermesso.subtitle',
+    subtasks: [
+      {
+        id: 'task-after-tessera-issued',
+        titleKey: 'tasks.items.afterTesseraIssued.title',
+        detailKey: 'tasks.items.afterTesseraIssued.detail',
+        requiredDocs: ['tessera-sanitaria']
+      },
+      {
+        id: 'task-after-family-doctor-assigned',
+        titleKey: 'tasks.items.afterFamilyDoctorAssigned.title',
+        detailKey: 'tasks.items.afterFamilyDoctorAssigned.detail',
+        requiredDocs: ['doctor-assignment-proof']
+      },
+      {
+        id: 'task-after-family-status-updated',
+        titleKey: 'tasks.items.afterFamilyStatusUpdated.title',
+        detailKey: 'tasks.items.afterFamilyStatusUpdated.detail',
+        requiredDocs: ['family-status-update']
+      },
+      {
+        id: 'task-after-tax-benefits-updated',
+        titleKey: 'tasks.items.afterTaxBenefitsUpdated.title',
+        detailKey: 'tasks.items.afterTaxBenefitsUpdated.detail',
+        requiredDocs: ['tax-benefit-update']
+      }
+    ]
+  },
+  {
+    id: 'sec-apostille-logistics',
+    badge: '🟩',
+    colorClass: 'section-green',
+    titleKey: 'tasks.sections.apostilleLogistics.title',
+    subtitleKey: 'tasks.sections.apostilleLogistics.subtitle',
+    subtasks: [
+      {
+        id: 'task-logistics-certificate-arrives-colorado',
+        titleKey: 'tasks.items.logisticsCertificateArrivesColorado.title',
+        detailKey: 'tasks.items.logisticsCertificateArrivesColorado.detail',
+        requiredDocs: ['shipping-tracking']
+      },
+      {
+        id: 'task-logistics-friends-send-lansing',
+        titleKey: 'tasks.items.logisticsFriendsSendLansing.title',
+        detailKey: 'tasks.items.logisticsFriendsSendLansing.detail',
+        requiredDocs: ['shipping-tracking']
+      },
+      {
+        id: 'task-logistics-family-brings-great-seal',
+        titleKey: 'tasks.items.logisticsFamilyBringsGreatSeal.title',
+        detailKey: 'tasks.items.logisticsFamilyBringsGreatSeal.detail',
+        requiredDocs: ['office-receipt']
+      },
+      {
+        id: 'task-logistics-apostille-issued-same-day',
+        titleKey: 'tasks.items.logisticsApostilleIssuedSameDay.title',
+        detailKey: 'tasks.items.logisticsApostilleIssuedSameDay.detail',
+        requiredDocs: ['apostille']
+      },
+      {
+        id: 'task-logistics-apostille-shipped-italy',
+        titleKey: 'tasks.items.logisticsApostilleShippedItaly.title',
+        detailKey: 'tasks.items.logisticsApostilleShippedItaly.detail',
+        requiredDocs: ['shipping-tracking']
+      },
+      {
+        id: 'task-logistics-apostille-received-italy',
+        titleKey: 'tasks.items.logisticsApostilleReceivedItaly.title',
+        detailKey: 'tasks.items.logisticsApostilleReceivedItaly.detail',
+        requiredDocs: ['apostille', 'delivery-proof']
+      }
+    ]
+  },
+  {
+    id: 'sec-legal-stay',
+    badge: '🟦',
+    colorClass: 'section-blue',
+    titleKey: 'tasks.sections.legalStay.title',
+    subtitleKey: 'tasks.sections.legalStay.subtitle',
+    subtasks: [
+      {
+        id: 'task-legal-entry-90-day',
+        titleKey: 'tasks.items.legalEntry90Day.title',
+        detailKey: 'tasks.items.legalEntry90Day.detail',
+        requiredDocs: ['passport-stamp']
+      },
+      {
+        id: 'task-legal-permesso-application-extends-stay',
+        titleKey: 'tasks.items.legalPermessoApplicationExtendsStay.title',
+        detailKey: 'tasks.items.legalPermessoApplicationExtendsStay.detail',
+        requiredDocs: ['permesso-receipt']
+      }
     ]
   }
 ];
 
+const USEFUL_LINKS = [
+  {
+    id: 'agenzia-entrate',
+    titleKey: 'links.items.agenziaEntrate.title',
+    subtitleKey: 'links.items.agenziaEntrate.subtitle',
+    descriptionKey: 'links.items.agenziaEntrate.description',
+    url: 'https://www.agenziaentrate.gov.it/portale/'
+  },
+  {
+    id: 'comune-eppan',
+    titleKey: 'links.items.comuneEppan.title',
+    subtitleKey: 'links.items.comuneEppan.subtitle',
+    descriptionKey: 'links.items.comuneEppan.description',
+    url: 'https://www.eppan.com/'
+  },
+  {
+    id: 'questura-bolzano',
+    titleKey: 'links.items.questuraBolzano.title',
+    subtitleKey: 'links.items.questuraBolzano.subtitle',
+    descriptionKey: 'links.items.questuraBolzano.description',
+    url: 'https://questure.poliziadistato.it/it/Bolzano/'
+  },
+  {
+    id: 'michigan-great-seal',
+    titleKey: 'links.items.michiganGreatSeal.title',
+    subtitleKey: 'links.items.michiganGreatSeal.subtitle',
+    descriptionKey: 'links.items.michiganGreatSeal.description',
+    url: 'https://www.michigan.gov/sos/all-services/notary-application-and-instructions/apostille-certificates'
+  },
+  {
+    id: 'michigan-vital-records',
+    titleKey: 'links.items.michiganVitalRecords.title',
+    subtitleKey: 'links.items.michiganVitalRecords.subtitle',
+    descriptionKey: 'links.items.michiganVitalRecords.description',
+    url: 'https://www.michigan.gov/mdhhs/doing-business/vitalrecords'
+  }
+];
+
 const LEGACY_TASK_MIGRATION = {
-  'register-address': 'sub-address-appointment',
-  'book-residence-permit': 'sub-permesso-post'
+  'register-address': 'task-your-residency-registered',
+  'book-residence-permit': 'task-permesso-application-submitted',
+  'sub-address-docs': 'task-your-residency-registered',
+  'sub-address-appointment': 'task-your-residency-registered',
+  'sub-address-confirmation': 'task-your-residency-confirmed',
+  'sub-permesso-kit': 'task-permesso-application-submitted',
+  'sub-permesso-post': 'task-permesso-application-submitted',
+  'sub-permesso-questura': 'task-permesso-fingerprints-completed',
+  'sub-marriage-certificates': 'task-marriage-michigan-certificate-received',
+  'sub-marriage-appointment': 'task-marriage-submitted-comune',
+  'sub-marriage-transcript': 'task-marriage-registered-italy'
+};
+
+const B2_QUESTION_SETS = [
+  {
+    id: 'reading',
+    durationMinutes: 20,
+    titleKey: 'learning.sections.reading',
+    questions: [
+      {
+        id: 'reading-1',
+        type: 'multiple-choice',
+        promptKey: 'learning.questions.reading1.prompt',
+        options: ['learning.questions.reading1.a', 'learning.questions.reading1.b', 'learning.questions.reading1.c'],
+        answerIndex: 1
+      },
+      {
+        id: 'reading-2',
+        type: 'multiple-choice',
+        promptKey: 'learning.questions.reading2.prompt',
+        options: ['learning.questions.reading2.a', 'learning.questions.reading2.b', 'learning.questions.reading2.c'],
+        answerIndex: 2
+      }
+    ]
+  },
+  {
+    id: 'grammar',
+    durationMinutes: 15,
+    titleKey: 'learning.sections.grammar',
+    questions: [
+      {
+        id: 'grammar-1',
+        type: 'multiple-choice',
+        promptKey: 'learning.questions.grammar1.prompt',
+        options: ['learning.questions.grammar1.a', 'learning.questions.grammar1.b', 'learning.questions.grammar1.c'],
+        answerIndex: 0
+      },
+      {
+        id: 'grammar-2',
+        type: 'multiple-choice',
+        promptKey: 'learning.questions.grammar2.prompt',
+        options: ['learning.questions.grammar2.a', 'learning.questions.grammar2.b', 'learning.questions.grammar2.c'],
+        answerIndex: 1
+      }
+    ]
+  },
+  {
+    id: 'listening',
+    durationMinutes: 10,
+    titleKey: 'learning.sections.listening',
+    questions: [
+      {
+        id: 'listening-1',
+        type: 'multiple-choice',
+        promptKey: 'learning.questions.listening1.prompt',
+        options: ['learning.questions.listening1.a', 'learning.questions.listening1.b', 'learning.questions.listening1.c'],
+        answerIndex: 2
+      },
+      {
+        id: 'listening-2',
+        type: 'multiple-choice',
+        promptKey: 'learning.questions.listening2.prompt',
+        options: ['learning.questions.listening2.a', 'learning.questions.listening2.b', 'learning.questions.listening2.c'],
+        answerIndex: 0
+      }
+    ]
+  }
+];
+
+const DEFAULT_DURATION_BY_MODE = {
+  full: 45,
+  reading: 20,
+  grammar: 15,
+  listening: 10
+};
+
+const DOC_TYPE_LABELS = {
+  other: 'documents.typeOther',
+  'appointment-confirmation': 'documents.types.appointmentConfirmation',
+  'aa48-form': 'documents.types.aa48Form',
+  'codice-fiscale-pdf': 'documents.types.codiceFiscalePdf',
+  'residency-request': 'documents.types.residencyRequest',
+  'police-visit-note': 'documents.types.policeVisitNote',
+  'residency-certificate': 'documents.types.residencyCertificate',
+  'rental-contract': 'documents.types.rentalContract',
+  'us-marriage-certificate': 'documents.types.usMarriageCertificate',
+  'italian-translation-notarized': 'documents.types.italianTranslationNotarized',
+  apostille: 'documents.types.apostille',
+  'submission-receipt': 'documents.types.submissionReceipt',
+  'apostille-delivery-proof': 'documents.types.apostilleDeliveryProof',
+  'registration-confirmation': 'documents.types.registrationConfirmation',
+  'estratto-matrimonio': 'documents.types.estrattoMatrimonio',
+  'permesso-receipt': 'documents.types.permessoReceipt',
+  'fingerprint-appointment-proof': 'documents.types.fingerprintAppointmentProof',
+  'permesso-approval': 'documents.types.permessoApproval',
+  'permesso-card': 'documents.types.permessoCard',
+  'tessera-sanitaria': 'documents.types.tesseraSanitaria',
+  'doctor-assignment-proof': 'documents.types.doctorAssignmentProof',
+  'family-status-update': 'documents.types.familyStatusUpdate',
+  'tax-benefit-update': 'documents.types.taxBenefitUpdate',
+  'shipping-tracking': 'documents.types.shippingTracking',
+  'office-receipt': 'documents.types.officeReceipt',
+  'delivery-proof': 'documents.types.deliveryProof',
+  'passport-stamp': 'documents.types.passportStamp'
 };
 
 let translations = {};
@@ -47,6 +447,8 @@ let deferredInstallPrompt;
 let supabaseClient = null;
 let authSession = null;
 let inAppAlerts = [];
+let learningTimer = null;
+let reminderTimer = null;
 
 const languageSelect = document.getElementById('language-select');
 const installBtn = document.getElementById('install-btn');
@@ -54,17 +456,22 @@ const categoryList = document.getElementById('category-list');
 const nextPendingList = document.getElementById('next-pending-list');
 const overallProgress = document.getElementById('overall-progress');
 const reminderAlerts = document.getElementById('reminder-alerts');
-const appointmentForm = document.getElementById('appointment-form');
+const usefulLinksList = document.getElementById('useful-links-list');
 const timelineList = document.getElementById('timeline-list');
 const exportAllEventsBtn = document.getElementById('export-all-events');
-const documentForm = document.getElementById('document-form');
 const documentsList = document.getElementById('documents-list');
-const documentDashboard = document.getElementById('document-dashboard');
 const documentStatus = document.getElementById('document-status');
-const documentsFilter = document.getElementById('documents-filter');
-const linkedTaskSelect = document.getElementById('linked-task-select');
-const learningForm = document.getElementById('learning-form');
+const documentsSectionFilter = document.getElementById('documents-section-filter');
+const documentsTaskFilter = document.getElementById('documents-task-filter');
+const documentsTypeFilter = document.getElementById('documents-type-filter');
+const documentsMissing = document.getElementById('documents-missing');
+const learningMode = document.getElementById('learning-mode');
+const learningStartBtn = document.getElementById('learning-start');
+const learningSubmitBtn = document.getElementById('learning-submit');
+const learningTimerEl = document.getElementById('learning-timer');
+const learningTestArea = document.getElementById('learning-test-area');
 const learningSummary = document.getElementById('learning-summary');
+const learningHistory = document.getElementById('learning-history');
 const syncForm = document.getElementById('sync-form');
 const authSignInBtn = document.getElementById('auth-signin');
 const authSignUpBtn = document.getElementById('auth-signup');
@@ -87,7 +494,7 @@ const notificationService = {
       return;
     }
     inAppAlerts.unshift({ id: createId(), title, body, at: new Date().toISOString() });
-    inAppAlerts = inAppAlerts.slice(0, 8);
+    inAppAlerts = inAppAlerts.slice(0, 12);
   },
   registerPushSubscription() {
     return null;
@@ -105,88 +512,27 @@ async function init() {
     await setLanguage(event.target.value);
   });
 
-  appointmentForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const formData = new FormData(appointmentForm);
-    const title = (formData.get('title') || '').toString().trim();
-    const datetime = (formData.get('datetime') || '').toString();
-    const office = (formData.get('office') || '').toString().trim();
-    const address = (formData.get('address') || '').toString().trim();
-    if (!title || !datetime || !office || !address) return;
+  categoryList.addEventListener('click', onCategoryClick);
+  categoryList.addEventListener('change', onCategoryChange);
+  categoryList.addEventListener('submit', onCategorySubmit);
+  categoryList.addEventListener('input', onCategoryInput);
 
-    state.appointments.push({
-      id: createId(),
-      type: 'appointment',
-      title,
-      datetime,
-      office,
-      address,
-      mapsLink: normalizeHttpUrl((formData.get('mapsLink') || '').toString().trim()),
-      phone: (formData.get('phone') || '').toString().trim(),
-      website: normalizeHttpUrl((formData.get('website') || '').toString().trim()),
-      reminderOffsets: parseReminderOffsets((formData.get('reminderOffsets') || '').toString()),
-      updated_at: nowIso()
-    });
-
-    appointmentForm.reset();
-    saveStateAndRender();
+  documentsSectionFilter.addEventListener('change', () => {
+    renderDocumentsHub();
   });
+  documentsTaskFilter.addEventListener('change', () => {
+    renderDocumentsHub();
+  });
+  documentsTypeFilter.addEventListener('change', () => {
+    renderDocumentsHub();
+  });
+
+  learningMode.addEventListener('change', renderLearning);
+  learningStartBtn.addEventListener('click', startB2MockTest);
+  learningSubmitBtn.addEventListener('click', () => submitB2MockTest('manual'));
+  learningTestArea.addEventListener('change', onLearningAnswerChange);
 
   exportAllEventsBtn.addEventListener('click', exportAllEventsIcs);
-
-  documentForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const formData = new FormData(documentForm);
-    const name = (formData.get('name') || '').toString().trim();
-    const category = (formData.get('category') || '').toString().trim();
-    if (!name || !category) return;
-
-    const uploadFile = formData.get('uploadFile');
-    const captureFile = formData.get('captureFile');
-    const file = uploadFile instanceof File && uploadFile.size > 0
-      ? uploadFile
-      : captureFile instanceof File && captureFile.size > 0
-        ? captureFile
-        : null;
-
-    const linkedTaskId = (formData.get('linkedTaskId') || '').toString();
-    const documentEntry = {
-      id: createId(),
-      name,
-      category,
-      issueDate: (formData.get('issueDate') || '').toString(),
-      expiryDate: (formData.get('expiryDate') || '').toString(),
-      linkedTaskId,
-      fileName: file ? file.name : '',
-      fileUrl: '',
-      updated_at: nowIso()
-    };
-
-    if (file) {
-      const uploadResult = await uploadDocumentFile(file, documentEntry.id);
-      documentEntry.fileUrl = uploadResult.url;
-      documentEntry.storageProvider = uploadResult.provider;
-      documentStatus.textContent = uploadResult.message;
-    } else {
-      documentEntry.storageProvider = 'metadata-only';
-      documentStatus.textContent = t('documents.messages.metadataOnly');
-    }
-
-    state.documents.push(documentEntry);
-    documentForm.reset();
-    saveStateAndRender();
-  });
-
-  documentsFilter.addEventListener('change', renderDocuments);
-
-  learningForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const formData = new FormData(learningForm);
-    const completedLessons = Math.max(0, Number.parseInt((formData.get('completedLessons') || '0').toString(), 10) || 0);
-    const totalLessons = Math.max(1, Number.parseInt((formData.get('totalLessons') || '1').toString(), 10) || 1);
-    state.learningProgress = { completedLessons, totalLessons, updated_at: nowIso() };
-    saveStateAndRender();
-  });
 
   authSignInBtn.addEventListener('click', () => authWithSupabase('signin'));
   authSignUpBtn.addEventListener('click', () => authWithSupabase('signup'));
@@ -196,6 +542,7 @@ async function init() {
   requestNotificationBtn.addEventListener('click', async () => {
     const permission = await notificationService.requestPermission();
     state.reminders.notificationPermission = permission;
+    state.reminders.updated_at = nowIso();
     saveStateAndRender();
     if (permission === 'granted') {
       notificationService.registerPushSubscription();
@@ -218,7 +565,10 @@ async function init() {
 
   installPwaWiring();
   await initSupabase();
-  setInterval(checkDueReminders, 60 * 1000);
+  if (reminderTimer) clearInterval(reminderTimer);
+  if (learningTimer) clearInterval(learningTimer);
+  reminderTimer = setInterval(checkDueReminders, 60 * 1000);
+  learningTimer = setInterval(tickLearningTimer, 1000);
   checkDueReminders();
   renderAll();
 }
@@ -280,127 +630,118 @@ async function authWithSupabase(mode) {
       if (result.error) throw result.error;
       authSession = result.data.session;
       syncStatus.textContent = t('settings.messages.signedIn');
-      return;
-    }
-
-    if (mode === 'signup') {
+    } else if (mode === 'signup') {
       const result = await supabaseClient.auth.signUp({ email, password });
       if (result.error) throw result.error;
       authSession = result.data.session || null;
       syncStatus.textContent = t('settings.messages.signUpCheckEmail');
-      return;
+    } else if (mode === 'signout') {
+      const result = await supabaseClient.auth.signOut();
+      if (result.error) throw result.error;
+      authSession = null;
+      syncStatus.textContent = t('settings.messages.signedOut');
     }
-
-    await supabaseClient.auth.signOut();
-    authSession = null;
-    syncStatus.textContent = t('settings.messages.signedOut');
   } catch (error) {
-    syncStatus.textContent = `${t('settings.messages.authError')}: ${error.message}`;
+    syncStatus.textContent = `${t('settings.messages.authError')}: ${error?.message || ''}`;
   }
 }
 
 async function syncNow() {
-  state.settings.workspaceId = ((new FormData(syncForm).get('workspaceId') || '').toString().trim() || state.settings.workspaceId || 'default-workspace');
   if (!supabaseClient || !authSession) {
     syncStatus.textContent = t('settings.messages.syncNeedsAuth');
-    saveState();
     return;
   }
 
-  const workspaceId = state.settings.workspaceId;
-  const localPayload = serializeStateForSync();
+  const formData = new FormData(syncForm);
+  state.settings.workspaceId = (formData.get('workspaceId') || '').toString().trim() || state.settings.workspaceId || 'default-workspace';
 
+  const workspaceId = state.settings.workspaceId;
   try {
-    const readResult = await supabaseClient
+    const remote = await supabaseClient
       .from('workspace_states')
-      .select('workspace_id,payload,updated_at')
+      .select('payload,updated_at')
       .eq('workspace_id', workspaceId)
       .maybeSingle();
 
-    if (readResult.error && readResult.error.code !== 'PGRST116') throw readResult.error;
+    if (remote.error && remote.error.code !== 'PGRST116') throw remote.error;
 
-    const remotePayload = readResult.data?.payload || null;
-    const mergedPayload = remotePayload ? mergeSyncPayloads(localPayload, remotePayload) : localPayload;
+    const localPayload = serializeStateForSync();
+    const remotePayload = sanitizePayload(remote.data?.payload || null);
+    const merged = mergeSyncPayloads(localPayload, remotePayload);
 
-    const upsertResult = await supabaseClient.from('workspace_states').upsert({
-      workspace_id: workspaceId,
-      payload: mergedPayload,
-      updated_at: nowIso()
-    });
+    const writeResult = await supabaseClient
+      .from('workspace_states')
+      .upsert({
+        workspace_id: workspaceId,
+        payload: merged,
+        updated_at: nowIso()
+      }, { onConflict: 'workspace_id' });
 
-    if (upsertResult.error) throw upsertResult.error;
+    if (writeResult.error) throw writeResult.error;
 
-    applyImportedState(mergedPayload, true);
+    state = sanitizePayload(merged);
     state.sync.lastSyncedAt = nowIso();
     saveStateAndRender();
     syncStatus.textContent = t('settings.messages.syncSuccess');
   } catch (error) {
-    syncStatus.textContent = `${t('settings.messages.syncError')}: ${error.message}`;
+    syncStatus.textContent = `${t('settings.messages.syncError')}: ${error?.message || ''}`;
   }
 }
 
 function mergeSyncPayloads(localPayload, remotePayload) {
+  const local = sanitizePayload(localPayload);
+  const remote = sanitizePayload(remotePayload);
+
   const merged = {
-    ...localPayload,
-    reminders: mergeByUpdated(localPayload.reminders, remotePayload.reminders),
-    learningProgress: mergeByUpdated(localPayload.learningProgress, remotePayload.learningProgress),
-    subtaskState: {},
-    appointments: [],
-    documents: []
+    version: 3,
+    subtaskState: { ...local.subtaskState },
+    documents: mergeEntityArrays(local.documents, remote.documents),
+    reminders: mergeByUpdated(local.reminders, remote.reminders),
+    learning: mergeByUpdated(local.learning, remote.learning),
+    settings: mergeByUpdated(local.settings, remote.settings),
+    sync: mergeByUpdated(local.sync, remote.sync),
+    updated_at: nowIso()
   };
 
-  const allSubtaskIds = new Set([
-    ...Object.keys(localPayload.subtaskState || {}),
-    ...Object.keys(remotePayload.subtaskState || {})
-  ]);
-
-  allSubtaskIds.forEach((subtaskId) => {
-    merged.subtaskState[subtaskId] = mergeSubtaskState(
-      localPayload.subtaskState?.[subtaskId],
-      remotePayload.subtaskState?.[subtaskId]
-    );
+  Object.entries(remote.subtaskState || {}).forEach(([taskId, remoteTaskState]) => {
+    merged.subtaskState[taskId] = mergeSubtaskState(local.subtaskState[taskId], remoteTaskState);
   });
 
-  merged.appointments = mergeEntityArrays(localPayload.appointments || [], remotePayload.appointments || []);
-  merged.documents = mergeEntityArrays(localPayload.documents || [], remotePayload.documents || []);
-  merged.settings = {
-    ...remotePayload.settings,
-    ...localPayload.settings,
-    workspaceId: localPayload.settings?.workspaceId || remotePayload.settings?.workspaceId || 'default-workspace'
-  };
-
-  return merged;
-}
-
-function mergeEntityArrays(localItems, remoteItems) {
-  const map = new Map();
-  [...remoteItems, ...localItems].forEach((item) => {
-    if (!item?.id) return;
-    const current = map.get(item.id);
-    if (!current || parseDate(item.updated_at) >= parseDate(current.updated_at)) {
-      map.set(item.id, item);
-    }
+  CATEGORY_DEFINITIONS.flatMap((section) => section.subtasks).forEach((task) => {
+    if (!merged.subtaskState[task.id]) merged.subtaskState[task.id] = defaultSubtaskState();
   });
-  return Array.from(map.values());
-}
-
-function mergeSubtaskState(localItem, remoteItem) {
-  const local = localItem || defaultSubtaskState();
-  const remote = remoteItem || defaultSubtaskState();
-  const winner = parseDate(local.updated_at) >= parseDate(remote.updated_at) ? local : remote;
-  const completedAt = maxIso(local.completedAt, remote.completedAt);
-  const merged = {
-    ...winner,
-    reminderOffsets: uniqueSorted([...(local.reminderOffsets || []), ...(remote.reminderOffsets || [])])
-  };
-
-  if (completedAt) {
-    merged.completedAt = completedAt;
-    merged.done = local.done || remote.done;
-  }
 
   merged.updated_at = maxIso(local.updated_at, remote.updated_at) || nowIso();
   return merged;
+}
+
+function mergeSubtaskState(localItem, remoteItem) {
+  if (!localItem) return remoteItem || defaultSubtaskState();
+  if (!remoteItem) return localItem;
+
+  const merged = {
+    done: localItem.done || remoteItem.done,
+    targetDate: parseDate(localItem.updated_at) >= parseDate(remoteItem.updated_at) ? localItem.targetDate : remoteItem.targetDate,
+    notes: parseDate(localItem.updated_at) >= parseDate(remoteItem.updated_at) ? localItem.notes : remoteItem.notes,
+    reminderOffsets: parseDate(localItem.updated_at) >= parseDate(remoteItem.updated_at)
+      ? localItem.reminderOffsets
+      : remoteItem.reminderOffsets,
+    completedAt: maxIso(localItem.completedAt, remoteItem.completedAt),
+    updated_at: maxIso(localItem.updated_at, remoteItem.updated_at)
+  };
+  return merged;
+}
+
+function mergeEntityArrays(localArray, remoteArray) {
+  const map = new Map();
+  [...(localArray || []), ...(remoteArray || [])].forEach((item) => {
+    if (!item || !item.id) return;
+    const prev = map.get(item.id);
+    if (!prev || parseDate(item.updated_at) > parseDate(prev.updated_at)) {
+      map.set(item.id, item);
+    }
+  });
+  return [...map.values()];
 }
 
 function mergeByUpdated(localItem, remoteItem) {
@@ -433,116 +774,131 @@ function renderAll() {
   renderTasks();
   renderProgress();
   renderNextPending();
+  renderLinks();
   renderTimeline();
-  renderDocuments();
+  renderDocumentsHubFilters();
+  renderDocumentsHub();
   renderLearning();
   renderReminderAlerts();
-  renderSelectOptions();
   refreshBottomNavActiveState();
 }
 
 function renderTasks() {
   categoryList.innerHTML = '';
 
-  CATEGORY_DEFINITIONS.forEach((category) => {
-    const { done, total, percent } = computeCategoryProgress(category);
+  CATEGORY_DEFINITIONS.forEach((section) => {
+    const { done, total, percent } = computeCategoryProgress(section);
     const wrapper = document.createElement('article');
-    wrapper.className = 'item';
+    wrapper.className = `item section-card ${section.colorClass}`;
+    const sectionFilter = state.ui.sectionDocumentFilters[section.id] || { taskId: 'all', docType: 'all', expanded: false };
 
-    const subtasksHtml = category.subtasks.map((subtask) => {
-      const itemState = ensureSubtaskState(subtask.id);
+    const subtasksHtml = section.subtasks.map((task) => {
+      const taskState = ensureSubtaskState(task.id);
+      const dueInfo = getDueInfo(taskState.targetDate, taskState.done);
+      const taskDocs = state.documents.filter((doc) => doc.linkedTaskId === task.id);
+      const completedClass = taskState.done ? 'is-complete' : '';
+      const dueChip = dueInfo.level === 'soon'
+        ? `<span class="chip chip-warning">${t('tasks.dueSoon')}</span>`
+        : dueInfo.level === 'overdue'
+          ? `<span class="chip chip-danger">${t('tasks.overdue')}</span>`
+          : '';
       return `
-        <div class="subtask-grid item" data-subtask-id="${subtask.id}">
-          <label>
-            <input type="checkbox" data-subtask-toggle="${subtask.id}" ${itemState.done ? 'checked' : ''} />
-            <strong>${t(subtask.titleKey)}</strong>
-          </label>
-          <p>${t(subtask.detailKey)}</p>
-          <label>
-            <span>${t('tasks.targetDate')}</span>
-            <input type="date" data-subtask-date="${subtask.id}" value="${escapeAttribute(itemState.targetDate || '')}" />
-          </label>
-          <label>
-            <span>${t('tasks.reminders')}</span>
-            <input type="text" data-subtask-reminders="${subtask.id}" value="${escapeAttribute(formatReminderOffsets(itemState.reminderOffsets || []))}" placeholder="7d,1d,2h" />
-          </label>
-          <label>
-            <span>${t('tasks.notes')}</span>
-            <textarea data-subtask-notes="${subtask.id}">${escapeHtml(itemState.notes || '')}</textarea>
-          </label>
-        </div>
+        <li class="task-card ${completedClass}" data-task-id="${task.id}">
+          <div class="task-head">
+            <label class="task-toggle">
+              <input type="checkbox" data-task-toggle="${task.id}" ${taskState.done ? 'checked' : ''} />
+              <strong>${escapeHtml(t(task.titleKey))}</strong>
+            </label>
+            <div class="task-chips">
+              <span class="chip">${taskDocs.length} ${t('documents.shortLabel')}</span>
+              ${dueChip}
+            </div>
+          </div>
+          <p>${escapeHtml(t(task.detailKey))}</p>
+          <div class="task-actions-row" role="group" aria-label="${escapeAttribute(t('tasks.taskActions'))}">
+            <button type="button" data-open-panel="check" data-task-panel="${task.id}">${t('tasks.actions.checkDone')}</button>
+            <button type="button" data-open-panel="reminder" data-task-panel="${task.id}">${t('tasks.actions.reminder')}</button>
+            <button type="button" data-open-panel="documents" data-task-panel="${task.id}">${t('tasks.actions.documents')}</button>
+            <button type="button" data-open-panel="notes" data-task-panel="${task.id}">${t('tasks.actions.notes')}</button>
+          </div>
+          <div class="task-panel" data-panel-type="check" data-panel-owner="${task.id}" hidden>
+            <label class="inline-checkbox">
+              <input type="checkbox" data-task-toggle="${task.id}" ${taskState.done ? 'checked' : ''} />
+              <span>${t('tasks.markCompleted')}</span>
+            </label>
+          </div>
+          <div class="task-panel" data-panel-type="reminder" data-panel-owner="${task.id}" hidden>
+            <label>
+              <span>${t('tasks.targetDate')}</span>
+              <input type="date" data-task-date="${task.id}" value="${escapeAttribute(taskState.targetDate || '')}" />
+            </label>
+            <label>
+              <span>${t('tasks.reminders')}</span>
+              <input type="text" data-task-reminders="${task.id}" value="${escapeAttribute(formatReminderOffsets(taskState.reminderOffsets || []))}" placeholder="7d,1d,2h" />
+            </label>
+          </div>
+          <div class="task-panel" data-panel-type="documents" data-panel-owner="${task.id}" hidden>
+            <form data-task-doc-form="${task.id}" class="form-grid compact">
+              <input name="name" required placeholder="${escapeAttribute(t('documents.fields.name'))}" />
+              <select name="docType">${buildDocumentTypeOptions(task.requiredDocs || [])}</select>
+              <input name="uploadFile" type="file" accept="image/*,.pdf" />
+              <input name="captureFile" type="file" accept="image/*" capture="environment" />
+              <button type="submit">${t('documents.addForTask')}</button>
+            </form>
+            <ul class="stack mini-doc-list">${renderTaskDocumentItems(taskDocs)}</ul>
+          </div>
+          <div class="task-panel" data-panel-type="notes" data-panel-owner="${task.id}" hidden>
+            <label>
+              <span>${t('tasks.notes')}</span>
+              <textarea data-task-notes="${task.id}">${escapeHtml(taskState.notes || '')}</textarea>
+            </label>
+          </div>
+        </li>
       `;
     }).join('');
 
+    const sectionDocs = getSectionDocuments(section.id, sectionFilter);
+    const missingItems = getSectionMissingDocuments(section);
+    const missingText = missingItems.length
+      ? `${t('documents.missingLabel')}: ${missingItems.slice(0, 4).map((item) => escapeHtml(item)).join(', ')}${missingItems.length > 4 ? '…' : ''}`
+      : t('documents.noneMissing');
+
     wrapper.innerHTML = `
-      <div class="category-header">
+      <div class="section-header">
         <div>
-          <h3>${t(category.titleKey)}</h3>
-          <p>${done}/${total} (${percent}%)</p>
+          <p class="section-badge">${section.badge}</p>
+          <h3>${escapeHtml(t(section.titleKey))}</h3>
+          <p>${escapeHtml(t(section.subtitleKey))}</p>
         </div>
-        <button type="button" data-category-toggle="${category.id}" aria-expanded="false">${t('tasks.openCategory')}</button>
+        <div class="section-metrics">
+          <span class="chip">${done}/${total}</span>
+          <span class="chip">${percent}%</span>
+          <button type="button" data-section-toggle="${section.id}" aria-expanded="${sectionFilter.expanded ? 'true' : 'false'}">${sectionFilter.expanded ? t('tasks.closeCategory') : t('tasks.openCategory')}</button>
+        </div>
       </div>
-      <progress max="100" value="${percent}" aria-label="${escapeAttribute(t(category.titleKey))} ${percent}%"></progress>
-      <div class="category-subtasks" id="subtasks-${category.id}" hidden>
-        ${subtasksHtml}
+      <progress max="100" value="${percent}" aria-label="${escapeAttribute(t(section.titleKey))} ${percent}%"></progress>
+      <div class="section-body" ${sectionFilter.expanded ? '' : 'hidden'} id="section-${section.id}">
+        <ul class="stack">${subtasksHtml}</ul>
+        <div class="section-doc-center item">
+          <div class="section-doc-head">
+            <h4>${t('documents.sectionCenterTitle')}</h4>
+            <button type="button" data-scroll-docs="${section.id}">${t('documents.viewAllSectionDocuments')}</button>
+          </div>
+          <p class="muted">${missingText}</p>
+          <div class="form-grid compact">
+            <label>
+              <span>${t('documents.filterTask')}</span>
+              <select data-section-doc-task-filter="${section.id}">${buildSectionTaskFilterOptions(section, sectionFilter.taskId)}</select>
+            </label>
+            <label>
+              <span>${t('documents.filterType')}</span>
+              <select data-section-doc-type-filter="${section.id}">${buildSectionTypeFilterOptions(section, sectionFilter.docType)}</select>
+            </label>
+          </div>
+          <ul class="stack">${renderDocumentItems(sectionDocs)}</ul>
+        </div>
       </div>
     `;
-
-    wrapper.querySelector('[data-category-toggle]')?.addEventListener('click', (event) => {
-      const section = wrapper.querySelector(`#subtasks-${category.id}`);
-      if (!section) return;
-      const hidden = section.hasAttribute('hidden');
-      if (hidden) {
-        section.removeAttribute('hidden');
-        event.currentTarget.textContent = t('tasks.closeCategory');
-        event.currentTarget.setAttribute('aria-expanded', 'true');
-      } else {
-        section.setAttribute('hidden', 'hidden');
-        event.currentTarget.textContent = t('tasks.openCategory');
-        event.currentTarget.setAttribute('aria-expanded', 'false');
-      }
-    });
-
-    wrapper.querySelectorAll('[data-subtask-toggle]').forEach((input) => {
-      input.addEventListener('change', (event) => {
-        const subtaskId = event.target.getAttribute('data-subtask-toggle');
-        const subtaskState = ensureSubtaskState(subtaskId);
-        subtaskState.done = event.target.checked;
-        if (event.target.checked) subtaskState.completedAt = nowIso();
-        subtaskState.updated_at = nowIso();
-        saveStateAndRender();
-      });
-    });
-
-    wrapper.querySelectorAll('[data-subtask-date]').forEach((input) => {
-      input.addEventListener('change', (event) => {
-        const subtaskId = event.target.getAttribute('data-subtask-date');
-        const subtaskState = ensureSubtaskState(subtaskId);
-        subtaskState.targetDate = event.target.value || '';
-        subtaskState.updated_at = nowIso();
-        saveStateAndRender();
-      });
-    });
-
-    wrapper.querySelectorAll('[data-subtask-reminders]').forEach((input) => {
-      input.addEventListener('change', (event) => {
-        const subtaskId = event.target.getAttribute('data-subtask-reminders');
-        const subtaskState = ensureSubtaskState(subtaskId);
-        subtaskState.reminderOffsets = parseReminderOffsets(event.target.value || '');
-        subtaskState.updated_at = nowIso();
-        saveStateAndRender();
-      });
-    });
-
-    wrapper.querySelectorAll('[data-subtask-notes]').forEach((input) => {
-      input.addEventListener('change', (event) => {
-        const subtaskId = event.target.getAttribute('data-subtask-notes');
-        const subtaskState = ensureSubtaskState(subtaskId);
-        subtaskState.notes = event.target.value || '';
-        subtaskState.updated_at = nowIso();
-        saveStateAndRender();
-      });
-    });
 
     categoryList.appendChild(wrapper);
   });
@@ -552,23 +908,19 @@ function renderProgress() {
   const totals = getOverallProgress();
   overallProgress.innerHTML = `
     <h3>${t('dashboard.overallProgress')}</h3>
-    <p>${totals.done}/${totals.total} (${totals.percent}%)</p>
+    <p>${totals.done} ${t('dashboard.of')} ${totals.total} ${t('dashboard.stepsCompleted')} · ${totals.percent}%</p>
     <progress max="100" value="${totals.percent}" aria-label="${totals.percent}%"></progress>
   `;
 }
 
 function renderNextPending() {
   const pending = CATEGORY_DEFINITIONS
-    .flatMap((category) => category.subtasks.map((subtask) => ({
-      category,
-      subtask,
-      state: ensureSubtaskState(subtask.id)
-    })))
-    .filter((item) => !item.state.done)
+    .flatMap((section) => section.subtasks.map((task) => ({ section, task, taskState: ensureSubtaskState(task.id) })))
+    .filter((entry) => !entry.taskState.done)
     .sort((a, b) => {
-      if (a.state.targetDate && b.state.targetDate) return a.state.targetDate.localeCompare(b.state.targetDate);
-      if (a.state.targetDate) return -1;
-      if (b.state.targetDate) return 1;
+      if (a.taskState.targetDate && b.taskState.targetDate) return a.taskState.targetDate.localeCompare(b.taskState.targetDate);
+      if (a.taskState.targetDate) return -1;
+      if (b.taskState.targetDate) return 1;
       return 0;
     })
     .slice(0, 5);
@@ -579,16 +931,29 @@ function renderNextPending() {
     return;
   }
 
-  pending.forEach((item) => {
+  pending.forEach((entry) => {
+    const dueInfo = getDueInfo(entry.taskState.targetDate, false);
     const li = document.createElement('li');
     li.className = 'item';
     li.innerHTML = `
-      <strong>${t(item.subtask.titleKey)}</strong>
-      <p>${t(item.category.titleKey)}</p>
-      <p>${item.state.targetDate ? item.state.targetDate : t('tasks.noDate')}</p>
+      <strong>${escapeHtml(t(entry.task.titleKey))}</strong>
+      <p>${escapeHtml(t(entry.section.titleKey))}</p>
+      <p>${entry.taskState.targetDate || t('tasks.noDate')}</p>
+      <p class="${dueInfo.level === 'overdue' ? 'danger' : ''}">${escapeHtml(dueInfo.text)}</p>
     `;
     nextPendingList.appendChild(li);
   });
+}
+
+function renderLinks() {
+  usefulLinksList.innerHTML = USEFUL_LINKS.map((item) => `
+    <li class="item">
+      <strong>${escapeHtml(t(item.titleKey))}</strong>
+      <p>${escapeHtml(t(item.subtitleKey))}</p>
+      <p>${escapeHtml(t(item.descriptionKey))}</p>
+      <a href="${escapeAttribute(item.url)}" target="_blank" rel="noopener">${t('links.open')}</a>
+    </li>
+  `).join('');
 }
 
 function renderTimeline() {
@@ -601,181 +966,517 @@ function renderTimeline() {
   }
 
   events.forEach((event) => {
+    const dueInfo = getDueInfo(event.dateOnly, false);
     const li = document.createElement('li');
     li.className = 'item';
-    const title = document.createElement('h3');
-    title.textContent = event.title;
-    li.appendChild(title);
-
-    const date = document.createElement('p');
-    date.textContent = new Date(event.datetime).toLocaleString();
-    li.appendChild(date);
-
-    const context = document.createElement('p');
-    context.textContent = event.context;
-    li.appendChild(context);
-
-    const reminderText = document.createElement('p');
-    reminderText.textContent = `${t('calendar.reminders')}: ${formatReminderOffsets(event.reminderOffsets)}`;
-    li.appendChild(reminderText);
-
-    const actions = document.createElement('div');
-    actions.className = 'item-actions';
-
-    if (event.phone) {
-      const phone = document.createElement('a');
-      phone.href = `tel:${event.phone}`;
-      phone.textContent = t('calendar.call');
-      actions.appendChild(phone);
-    }
-
-    if (event.mapsLink) {
-      const map = document.createElement('a');
-      map.href = event.mapsLink;
-      map.target = '_blank';
-      map.rel = 'noopener';
-      map.textContent = t('calendar.map');
-      actions.appendChild(map);
-    }
-
-    if (event.website) {
-      const website = document.createElement('a');
-      website.href = event.website;
-      website.target = '_blank';
-      website.rel = 'noopener';
-      website.textContent = t('calendar.website');
-      actions.appendChild(website);
-    }
-
-    const exportBtn = document.createElement('button');
-    exportBtn.type = 'button';
-    exportBtn.textContent = t('calendar.exportOne');
-    exportBtn.addEventListener('click', () => exportSingleEventIcs(event.id));
-    actions.appendChild(exportBtn);
-
-    const deleteBtn = document.createElement('button');
-    deleteBtn.type = 'button';
-    deleteBtn.textContent = t('common.delete');
-    deleteBtn.addEventListener('click', () => deleteEvent(event));
-    actions.appendChild(deleteBtn);
-
-    li.appendChild(actions);
+    li.innerHTML = `
+      <h3>${escapeHtml(event.title)}</h3>
+      <p>${new Date(event.datetime).toLocaleString()}</p>
+      <p>${escapeHtml(event.context)}</p>
+      <p>${t('calendar.reminders')}: ${escapeHtml(formatReminderOffsets(event.reminderOffsets))}</p>
+      <p class="${dueInfo.level === 'overdue' ? 'danger' : ''}">${escapeHtml(dueInfo.text)}</p>
+      <div class="item-actions">
+        <button type="button" data-export-event="${event.id}">${t('calendar.exportOne')}</button>
+        <button type="button" data-clear-event="${event.id}">${t('calendar.clearDate')}</button>
+      </div>
+    `;
     timelineList.appendChild(li);
   });
-}
 
-function deleteEvent(event) {
-  if (!confirm(t('common.confirmDelete'))) return;
-  if (event.source === 'appointment') {
-    state.appointments = state.appointments.filter((item) => item.id !== event.id);
-  }
-  if (event.source === 'subtask') {
-    const subtaskState = ensureSubtaskState(event.id);
-    subtaskState.targetDate = '';
-    subtaskState.reminderOffsets = [];
-    subtaskState.updated_at = nowIso();
-  }
-  saveStateAndRender();
-}
+  timelineList.querySelectorAll('[data-export-event]').forEach((button) => {
+    button.addEventListener('click', () => exportSingleEventIcs(button.getAttribute('data-export-event')));
+  });
 
-function renderDocuments() {
-  documentsList.innerHTML = '';
-  const filterValue = documentsFilter.value || 'all';
-  const filteredDocs = state.documents.filter((doc) => filterValue === 'all' || doc.linkedTaskId === filterValue);
-
-  filteredDocs.forEach((documentItem) => {
-    const expiryInfo = getExpiryInfo(documentItem.expiryDate);
-    const linkedTitle = getSubtaskTitle(documentItem.linkedTaskId);
-    const li = document.createElement('li');
-    li.className = 'item';
-
-    const title = document.createElement('h3');
-    title.textContent = `${documentItem.name} (${documentItem.category})`;
-    li.appendChild(title);
-
-    const linkedTask = document.createElement('p');
-    linkedTask.textContent = `${t('documents.linkedTask')}: ${linkedTitle}`;
-    li.appendChild(linkedTask);
-
-    const issueDate = document.createElement('p');
-    issueDate.textContent = `${t('documents.issueDate')}: ${documentItem.issueDate || t('tasks.noDate')}`;
-    li.appendChild(issueDate);
-
-    const expiryDate = document.createElement('p');
-    expiryDate.textContent = `${t('documents.expiryDate')}: ${documentItem.expiryDate || t('tasks.noDate')}`;
-    li.appendChild(expiryDate);
-
-    const fileName = document.createElement('p');
-    fileName.textContent = `${t('documents.file')}: ${documentItem.fileName || t('documents.noFile')}`;
-    li.appendChild(fileName);
-
-    const expiryMessage = document.createElement('p');
-    expiryMessage.textContent = expiryInfo.message;
-    if (expiryInfo.isExpired || expiryInfo.daysLeft <= 30) expiryMessage.classList.add('danger');
-    li.appendChild(expiryMessage);
-
-    const actions = document.createElement('div');
-    actions.className = 'item-actions';
-
-    if (documentItem.fileUrl) {
-      const fileLink = document.createElement('a');
-      fileLink.href = documentItem.fileUrl;
-      fileLink.target = '_blank';
-      fileLink.rel = 'noopener';
-      fileLink.textContent = t('documents.openFile');
-      actions.appendChild(fileLink);
-    }
-
-    const deleteBtn = document.createElement('button');
-    deleteBtn.type = 'button';
-    deleteBtn.textContent = t('common.delete');
-    deleteBtn.addEventListener('click', () => {
-      if (!confirm(t('common.confirmDelete'))) return;
-      state.documents = state.documents.filter((item) => item.id !== documentItem.id);
+  timelineList.querySelectorAll('[data-clear-event]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const taskId = button.getAttribute('data-clear-event');
+      const taskState = ensureSubtaskState(taskId);
+      taskState.targetDate = '';
+      taskState.updated_at = nowIso();
       saveStateAndRender();
     });
-    actions.appendChild(deleteBtn);
-
-    li.appendChild(actions);
-    documentsList.appendChild(li);
   });
-
-  if (!filteredDocs.length) {
-    documentsList.innerHTML = `<li class="item empty">${t('documents.empty')}</li>`;
-  }
-
-  renderDocumentDashboard();
 }
 
-function renderDocumentDashboard() {
-  const metrics = {
-    total: state.documents.length,
-    expired: 0,
-    expiring7: 0,
-    expiring30: 0
-  };
+function renderDocumentsHubFilters() {
+  const sections = CATEGORY_DEFINITIONS;
+  const tasks = CATEGORY_DEFINITIONS.flatMap((section) => section.subtasks.map((task) => ({ sectionId: section.id, ...task })));
+  const allTypes = [...new Set(state.documents.map((doc) => doc.docType).filter(Boolean))].sort();
 
-  state.documents.forEach((item) => {
-    const info = getExpiryInfo(item.expiryDate);
-    if (info.isExpired) metrics.expired += 1;
-    if (!info.isExpired && info.daysLeft <= 7) metrics.expiring7 += 1;
-    if (!info.isExpired && info.daysLeft <= 30) metrics.expiring30 += 1;
+  const currentSection = documentsSectionFilter.value || 'all';
+  documentsSectionFilter.innerHTML = `<option value="all">${t('documents.filterAllSections')}</option>` + sections
+    .map((section) => `<option value="${section.id}">${escapeHtml(t(section.titleKey))}</option>`)
+    .join('');
+  documentsSectionFilter.value = currentSection;
+
+  const taskOptions = tasks.filter((task) => currentSection === 'all' || task.sectionId === currentSection);
+  const currentTask = documentsTaskFilter.value || 'all';
+  documentsTaskFilter.innerHTML = `<option value="all">${t('documents.filterAllTasks')}</option>` + taskOptions
+    .map((task) => `<option value="${task.id}">${escapeHtml(t(task.titleKey))}</option>`)
+    .join('');
+  if (Array.from(documentsTaskFilter.options).some((option) => option.value === currentTask)) {
+    documentsTaskFilter.value = currentTask;
+  }
+
+  const currentType = documentsTypeFilter.value || 'all';
+  documentsTypeFilter.innerHTML = `<option value="all">${t('documents.filterAllTypes')}</option>` + allTypes
+    .map((docType) => `<option value="${escapeAttribute(docType)}">${escapeHtml(getDocTypeLabel(docType))}</option>`)
+    .join('');
+  if (Array.from(documentsTypeFilter.options).some((option) => option.value === currentType)) {
+    documentsTypeFilter.value = currentType;
+  }
+}
+
+function renderDocumentsHub() {
+  documentsList.innerHTML = '';
+  const sectionId = documentsSectionFilter.value || 'all';
+  const taskId = documentsTaskFilter.value || 'all';
+  const docType = documentsTypeFilter.value || 'all';
+
+  const docs = state.documents.filter((doc) => {
+    if (sectionId !== 'all' && getSectionForTask(doc.linkedTaskId)?.id !== sectionId) return false;
+    if (taskId !== 'all' && doc.linkedTaskId !== taskId) return false;
+    if (docType !== 'all' && doc.docType !== docType) return false;
+    return true;
   });
 
-  documentDashboard.innerHTML = `
-    <div class="card"><strong>${metrics.total}</strong><p>${t('documents.dashboard.total')}</p></div>
-    <div class="card"><strong>${metrics.expired}</strong><p>${t('documents.dashboard.expired')}</p></div>
-    <div class="card"><strong>${metrics.expiring7}</strong><p>${t('documents.dashboard.expiring7')}</p></div>
-    <div class="card"><strong>${metrics.expiring30}</strong><p>${t('documents.dashboard.expiring30')}</p></div>
-  `;
+  if (!docs.length) {
+    const empty = document.createElement('li');
+    empty.className = 'item empty';
+    empty.textContent = t('documents.empty');
+    documentsList.replaceChildren(empty);
+  } else {
+    documentsList.replaceChildren(...buildDocumentNodes(docs));
+  }
+
+  const missing = getMissingDocumentsForFilters(sectionId, taskId);
+  documentsMissing.textContent = missing.length
+    ? `${t('documents.missingLabel')}: ${missing.slice(0, 8).join(', ')}${missing.length > 8 ? '…' : ''}`
+    : t('documents.noneMissing');
+
+  bindDocumentActions(documentsList);
 }
 
 function renderLearning() {
-  const completed = state.learningProgress.completedLessons || 0;
-  const total = state.learningProgress.totalLessons || 1;
-  learningSummary.textContent = `${t('learning.progress')}: ${completed}/${total}`;
-  learningForm.elements.completedLessons.value = String(completed);
-  learningForm.elements.totalLessons.value = String(total);
+  const active = state.learning.activeAttempt;
+  if (!active) {
+    learningSubmitBtn.hidden = true;
+    learningTimerEl.textContent = '';
+    learningSummary.textContent = t('learning.ready');
+    learningTestArea.innerHTML = `<p class="muted">${t('learning.startPrompt')}</p>`;
+  } else {
+    learningSubmitBtn.hidden = false;
+    const remaining = getLearningRemainingSeconds(active);
+    learningTimerEl.textContent = `${t('learning.timeLeft')}: ${formatSeconds(remaining)}`;
+    learningSummary.textContent = `${t('learning.activeMode')}: ${t(`learning.modes.${active.mode}`)}`;
+    learningTestArea.innerHTML = renderLearningQuestions(active);
+  }
+
+  const history = state.learning.history || [];
+  learningHistory.innerHTML = history.length
+    ? history.slice().reverse().map((entry) => `
+      <li class="item">
+        <strong>${escapeHtml(t(`learning.modes.${entry.mode}`))}</strong>
+        <p>${entry.score}/${entry.total} (${entry.percent}%)</p>
+        <p>${new Date(entry.completedAt).toLocaleString()}</p>
+      </li>
+    `).join('')
+    : `<li class="item empty">${t('learning.noHistory')}</li>`;
+}
+
+function onCategoryClick(event) {
+  const sectionToggle = event.target.closest('[data-section-toggle]');
+  if (sectionToggle) {
+    const sectionId = sectionToggle.getAttribute('data-section-toggle');
+    const filters = state.ui.sectionDocumentFilters[sectionId] || { taskId: 'all', docType: 'all', expanded: false };
+    filters.expanded = !filters.expanded;
+    state.ui.sectionDocumentFilters[sectionId] = filters;
+    saveStateAndRender();
+    return;
+  }
+
+  const panelBtn = event.target.closest('[data-open-panel]');
+  if (panelBtn) {
+    const taskId = panelBtn.getAttribute('data-task-panel');
+    const panel = panelBtn.getAttribute('data-open-panel');
+    toggleTaskPanel(taskId, panel);
+    return;
+  }
+
+  const scrollDocs = event.target.closest('[data-scroll-docs]');
+  if (scrollDocs) {
+    const sectionId = scrollDocs.getAttribute('data-scroll-docs');
+    documentsSectionFilter.value = sectionId;
+    renderDocumentsHubFilters();
+    renderDocumentsHub();
+    document.getElementById('documents')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
+
+  const docAction = event.target.closest('[data-doc-action]');
+  if (docAction) {
+    void handleDocumentAction(docAction.getAttribute('data-doc-action'), docAction.getAttribute('data-doc-id'));
+  }
+}
+
+function onCategoryChange(event) {
+  if (event.target.matches('[data-task-toggle]')) {
+    const taskId = event.target.getAttribute('data-task-toggle');
+    const taskState = ensureSubtaskState(taskId);
+    taskState.done = event.target.checked;
+    if (event.target.checked) taskState.completedAt = taskState.completedAt || nowIso();
+    if (!event.target.checked) taskState.completedAt = '';
+    taskState.updated_at = nowIso();
+    saveStateAndRender();
+    return;
+  }
+
+  if (event.target.matches('[data-task-date]')) {
+    const taskId = event.target.getAttribute('data-task-date');
+    const taskState = ensureSubtaskState(taskId);
+    taskState.targetDate = event.target.value || '';
+    taskState.updated_at = nowIso();
+    saveStateAndRender();
+    return;
+  }
+
+  if (event.target.matches('[data-task-reminders]')) {
+    const taskId = event.target.getAttribute('data-task-reminders');
+    const taskState = ensureSubtaskState(taskId);
+    taskState.reminderOffsets = parseReminderOffsets(event.target.value || '');
+    taskState.updated_at = nowIso();
+    saveStateAndRender();
+    return;
+  }
+
+  if (event.target.matches('[data-section-doc-task-filter]')) {
+    const sectionId = event.target.getAttribute('data-section-doc-task-filter');
+    const filters = state.ui.sectionDocumentFilters[sectionId] || { taskId: 'all', docType: 'all', expanded: true };
+    filters.taskId = event.target.value || 'all';
+    state.ui.sectionDocumentFilters[sectionId] = filters;
+    saveStateAndRender();
+    return;
+  }
+
+  if (event.target.matches('[data-section-doc-type-filter]')) {
+    const sectionId = event.target.getAttribute('data-section-doc-type-filter');
+    const filters = state.ui.sectionDocumentFilters[sectionId] || { taskId: 'all', docType: 'all', expanded: true };
+    filters.docType = event.target.value || 'all';
+    state.ui.sectionDocumentFilters[sectionId] = filters;
+    saveStateAndRender();
+  }
+}
+
+function onCategoryInput(event) {
+  if (event.target.matches('[data-task-notes]')) {
+    const taskId = event.target.getAttribute('data-task-notes');
+    const taskState = ensureSubtaskState(taskId);
+    taskState.notes = event.target.value || '';
+    taskState.updated_at = nowIso();
+    saveState();
+  }
+}
+
+async function onCategorySubmit(event) {
+  const form = event.target.closest('[data-task-doc-form]');
+  if (!form) return;
+  event.preventDefault();
+
+  const taskId = form.getAttribute('data-task-doc-form');
+  const formData = new FormData(form);
+  const name = (formData.get('name') || '').toString().trim();
+  if (!name) return;
+
+  const uploadFile = formData.get('uploadFile');
+  const captureFile = formData.get('captureFile');
+  const file = uploadFile instanceof File && uploadFile.size > 0
+    ? uploadFile
+    : captureFile instanceof File && captureFile.size > 0
+      ? captureFile
+      : null;
+
+  const section = getSectionForTask(taskId);
+  const documentEntry = {
+    id: createId(),
+    linkedTaskId: taskId,
+    sectionId: section?.id || '',
+    name,
+    docType: (formData.get('docType') || '').toString().trim() || 'other',
+    fileName: file ? file.name : '',
+    fileUrl: '',
+    fileDataUrl: '',
+    storageProvider: 'metadata-only',
+    createdAt: nowIso(),
+    updated_at: nowIso()
+  };
+
+  if (file) {
+    const uploadResult = await uploadDocumentFile(file, documentEntry.id);
+    documentEntry.fileUrl = uploadResult.url;
+    documentEntry.storageProvider = uploadResult.provider;
+    if (!uploadResult.url) {
+      documentEntry.fileDataUrl = await fileToDataUrl(file);
+    }
+    documentStatus.textContent = uploadResult.message;
+  } else {
+    documentStatus.textContent = t('documents.messages.metadataOnly');
+  }
+
+  state.documents.push(documentEntry);
+  form.reset();
+  saveStateAndRender();
+}
+
+function toggleTaskPanel(taskId, panelType) {
+  const panels = categoryList.querySelectorAll(`[data-panel-owner="${CSS.escape(taskId)}"]`);
+  panels.forEach((panel) => {
+    if (panel.getAttribute('data-panel-type') === panelType) {
+      panel.toggleAttribute('hidden');
+    } else {
+      panel.setAttribute('hidden', 'hidden');
+    }
+  });
+}
+
+function renderTaskDocumentItems(documents) {
+  if (!documents.length) return `<li class="item empty">${t('documents.emptyTask')}</li>`;
+  return renderDocumentItems(documents);
+}
+
+function renderDocumentItems(documents) {
+  if (!documents.length) return `<li class="item empty">${t('documents.empty')}</li>`;
+  return documents.map((doc) => {
+    const fileHref = getSafeDocumentUrl(doc.fileUrl || doc.fileDataUrl || '');
+    return `
+      <li class="item">
+        <h4>${escapeHtml(doc.name)}</h4>
+        <p>${t('documents.linkedTask')}: ${escapeHtml(getSubtaskTitle(doc.linkedTaskId))}</p>
+        <p>${t('documents.typeLabel')}: ${escapeHtml(getDocTypeLabel(doc.docType || 'other'))}</p>
+        <p>${t('documents.file')}: ${escapeHtml(doc.fileName || t('documents.noFile'))}</p>
+        <div class="item-actions">
+          <button type="button" data-doc-action="preview" data-doc-id="${doc.id}" ${fileHref ? '' : 'disabled'}>${t('documents.preview')}</button>
+          <button type="button" data-doc-action="download" data-doc-id="${doc.id}" ${fileHref ? '' : 'disabled'}>${t('documents.download')}</button>
+          <button type="button" data-doc-action="share" data-doc-id="${doc.id}" ${fileHref ? '' : 'disabled'}>${t('documents.share')}</button>
+          <button type="button" data-doc-action="print" data-doc-id="${doc.id}" ${fileHref ? '' : 'disabled'}>${t('documents.print')}</button>
+          <button type="button" data-doc-action="delete" data-doc-id="${doc.id}">${t('common.delete')}</button>
+        </div>
+      </li>
+    `;
+  }).join('');
+}
+
+function bindDocumentActions(container) {
+  container.querySelectorAll('[data-doc-action]').forEach((button) => {
+    button.addEventListener('click', () => {
+      void handleDocumentAction(button.getAttribute('data-doc-action'), button.getAttribute('data-doc-id'));
+    });
+  });
+}
+
+async function handleDocumentAction(action, docId) {
+  const doc = state.documents.find((item) => item.id === docId);
+  if (!doc) return;
+  const fileHref = getSafeDocumentUrl(doc.fileUrl || doc.fileDataUrl || '');
+
+  if (action === 'delete') {
+    if (!confirm(t('common.confirmDelete'))) return;
+    state.documents = state.documents.filter((item) => item.id !== docId);
+    saveStateAndRender();
+    return;
+  }
+
+  if (!fileHref) return;
+
+  if (action === 'preview') {
+    window.open(fileHref, '_blank', 'noopener');
+    return;
+  }
+
+  if (action === 'download') {
+    if (!/^https?:\/\//i.test(fileHref) && !/^blob:/i.test(fileHref) && !/^data:(image\/|application\/pdf)/i.test(fileHref)) return;
+    const response = await fetch(fileHref);
+    if (!response.ok) return;
+    const blob = await response.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = doc.fileName || safeFileName(doc.name);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(objectUrl);
+    return;
+  }
+
+  if (action === 'share') {
+    if (navigator.share) {
+      navigator.share({ title: doc.name, text: doc.name, url: fileHref }).catch(() => {});
+    }
+    return;
+  }
+
+  if (action === 'print') {
+    if (!/^https?:\/\//i.test(fileHref) && !/^blob:/i.test(fileHref) && !/^data:(image\/|application\/pdf)/i.test(fileHref)) return;
+    const printWindow = window.open(fileHref, '_blank', 'noopener');
+    if (printWindow) {
+      printWindow.addEventListener('load', () => {
+        printWindow.print();
+      });
+    }
+  }
+}
+
+function buildDocumentNodes(documents) {
+  return documents.map((doc) => {
+    const fileHref = getSafeDocumentUrl(doc.fileUrl || doc.fileDataUrl || '');
+    const li = document.createElement('li');
+    li.className = 'item';
+
+    const title = document.createElement('h4');
+    title.textContent = doc.name || '';
+    li.appendChild(title);
+
+    const linkedTask = document.createElement('p');
+    linkedTask.textContent = `${t('documents.linkedTask')}: ${getSubtaskTitle(doc.linkedTaskId)}`;
+    li.appendChild(linkedTask);
+
+    const type = document.createElement('p');
+    type.textContent = `${t('documents.typeLabel')}: ${getDocTypeLabel(doc.docType || 'other')}`;
+    li.appendChild(type);
+
+    const file = document.createElement('p');
+    file.textContent = `${t('documents.file')}: ${doc.fileName || t('documents.noFile')}`;
+    li.appendChild(file);
+
+    const actions = document.createElement('div');
+    actions.className = 'item-actions';
+    const actionDefs = [
+      ['preview', t('documents.preview')],
+      ['download', t('documents.download')],
+      ['share', t('documents.share')],
+      ['print', t('documents.print')],
+      ['delete', t('common.delete')]
+    ];
+    actionDefs.forEach(([actionId, label]) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = label;
+      button.dataset.docAction = actionId;
+      button.dataset.docId = doc.id;
+      if (!fileHref && actionId !== 'delete') button.disabled = true;
+      actions.appendChild(button);
+    });
+    li.appendChild(actions);
+    return li;
+  });
+}
+
+function startB2MockTest() {
+  if (state.learning.activeAttempt) {
+    learningSummary.textContent = t('learning.alreadyRunning');
+    learningTimerEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  const mode = learningMode.value || 'full';
+  const setIds = mode === 'full' ? B2_QUESTION_SETS.map((item) => item.id) : [mode];
+  const sections = B2_QUESTION_SETS.filter((item) => setIds.includes(item.id));
+
+  const questions = sections.flatMap((section) => section.questions.map((question) => ({
+    ...question,
+    sectionId: section.id,
+    sectionTitleKey: section.titleKey
+  })));
+
+  state.learning.activeAttempt = {
+    id: createId(),
+    mode,
+    startedAt: nowIso(),
+    durationMinutes: DEFAULT_DURATION_BY_MODE[mode] || 30,
+    answers: {},
+    questions,
+    updated_at: nowIso()
+  };
+
+  saveStateAndRender();
+}
+
+function onLearningAnswerChange(event) {
+  if (!state.learning.activeAttempt) return;
+  if (!event.target.matches('[data-learning-question]')) return;
+  const questionId = event.target.getAttribute('data-learning-question');
+  state.learning.activeAttempt.answers[questionId] = event.target.value;
+  state.learning.activeAttempt.updated_at = nowIso();
+  saveState();
+}
+
+function tickLearningTimer() {
+  if (!state.learning.activeAttempt) return;
+  const remaining = getLearningRemainingSeconds(state.learning.activeAttempt);
+  if (remaining <= 0) {
+    submitB2MockTest('timeout');
+  } else if (learningTimerEl) {
+    learningTimerEl.textContent = `${t('learning.timeLeft')}: ${formatSeconds(remaining)}`;
+  }
+}
+
+function submitB2MockTest(reason) {
+  const attempt = state.learning.activeAttempt;
+  if (!attempt) return;
+
+  let correct = 0;
+  const bySection = {};
+
+  attempt.questions.forEach((question) => {
+    const selected = Number(attempt.answers[question.id] || -1);
+    const isCorrect = selected === question.answerIndex;
+    if (isCorrect) correct += 1;
+
+    if (!bySection[question.sectionId]) {
+      bySection[question.sectionId] = { correct: 0, total: 0 };
+    }
+    bySection[question.sectionId].total += 1;
+    if (isCorrect) bySection[question.sectionId].correct += 1;
+  });
+
+  const total = attempt.questions.length;
+  const percent = total ? Math.round((correct / total) * 100) : 0;
+
+  const historyEntry = {
+    id: attempt.id,
+    mode: attempt.mode,
+    score: correct,
+    total,
+    percent,
+    reason,
+    bySection,
+    startedAt: attempt.startedAt,
+    completedAt: nowIso()
+  };
+
+  state.learning.history = [...(state.learning.history || []), historyEntry].slice(-30);
+  state.learning.activeAttempt = null;
+  saveStateAndRender();
+}
+
+function renderLearningQuestions(attempt) {
+  return attempt.questions.map((question, index) => `
+    <fieldset class="item">
+      <legend>${index + 1}. ${escapeHtml(t(question.promptKey))}</legend>
+      <p class="muted">${escapeHtml(t(question.sectionTitleKey))}</p>
+      ${(question.options || []).map((optionKey, optionIndex) => `
+        <label>
+          <input
+            type="radio"
+            name="q-${question.id}"
+            data-learning-question="${question.id}"
+            value="${optionIndex}"
+            ${(attempt.answers[question.id] || '') === String(optionIndex) ? 'checked' : ''}
+          />
+          <span>${escapeHtml(t(optionKey))}</span>
+        </label>
+      `).join('')}
+    </fieldset>
+  `).join('');
 }
 
 function renderReminderAlerts() {
@@ -793,34 +1494,6 @@ function renderReminderAlerts() {
   });
 }
 
-function renderSelectOptions() {
-  const allSubtasks = CATEGORY_DEFINITIONS.flatMap((category) => category.subtasks);
-
-  linkedTaskSelect.innerHTML = `<option value="">${t('documents.unlinked')}</option>` + allSubtasks
-    .map((subtask) => `<option value="${subtask.id}">${escapeHtml(t(subtask.titleKey))}</option>`)
-    .join('');
-
-  const currentFilter = documentsFilter.value || 'all';
-  documentsFilter.innerHTML = `<option value="all">${t('documents.filterAll')}</option>` + allSubtasks
-    .map((subtask) => `<option value="${subtask.id}">${escapeHtml(t(subtask.titleKey))}</option>`)
-    .join('');
-  documentsFilter.value = currentFilter;
-}
-
-function refreshBottomNavActiveState() {
-  const sections = bottomNavButtons.map((button) => ({
-    button,
-    section: document.getElementById(button.dataset.target)
-  })).filter((entry) => entry.section);
-
-  const viewportMid = window.scrollY + window.innerHeight * 0.4;
-  sections.forEach(({ button, section }) => {
-    const top = section.offsetTop;
-    const bottom = top + section.offsetHeight;
-    button.classList.toggle('active', viewportMid >= top && viewportMid <= bottom);
-  });
-}
-
 function checkDueReminders() {
   const now = Date.now();
   const events = getAllEvents();
@@ -834,7 +1507,10 @@ function checkDueReminders() {
       const fired = state.reminders.fired[key];
       if (!fired && triggerAt <= now) {
         state.reminders.fired[key] = nowIso();
-        notificationService.notify(t('dashboard.reminderTitle'), `${event.title} — ${new Date(event.datetime).toLocaleString()}`);
+        notificationService.notify(
+          t('dashboard.reminderTitle'),
+          `${event.title} — ${new Date(event.datetime).toLocaleString()}`
+        );
       }
     });
   });
@@ -843,6 +1519,7 @@ function checkDueReminders() {
     if (!validReminderKeys.has(key)) delete state.reminders.fired[key];
   });
 
+  state.reminders.updated_at = nowIso();
   saveState();
   renderReminderAlerts();
 }
@@ -856,9 +1533,7 @@ async function uploadDocumentFile(file, documentId) {
     const workspaceId = state.settings.workspaceId || 'default-workspace';
     const safeName = safeStorageName(file.name);
     const path = `${workspaceId}/${documentId}-${safeName}`;
-    const result = await supabaseClient.storage.from('documents').upload(path, file, {
-      upsert: true
-    });
+    const result = await supabaseClient.storage.from('documents').upload(path, file, { upsert: true });
 
     if (result.error) throw result.error;
 
@@ -869,8 +1544,8 @@ async function uploadDocumentFile(file, documentId) {
   }
 }
 
-function exportSingleEventIcs(eventId) {
-  const event = getAllEvents().find((item) => item.id === eventId);
+function exportSingleEventIcs(taskId) {
+  const event = getAllEvents().find((item) => item.id === taskId);
   if (!event) return;
   downloadIcs(buildIcs([event]), `${safeFileName(event.title)}.ics`);
 }
@@ -878,7 +1553,7 @@ function exportSingleEventIcs(eventId) {
 function exportAllEventsIcs() {
   const events = getAllEvents();
   if (!events.length) return;
-  downloadIcs(buildIcs(events), 'timeline-events.ics');
+  downloadIcs(buildIcs(events), 'task-reminders.ics');
 }
 
 function buildIcs(items) {
@@ -900,7 +1575,7 @@ function buildIcs(items) {
       `DTEND:${toUtcIcs(end)}`,
       `SUMMARY:${escapeIcs(item.title)}`,
       `LOCATION:${escapeIcs(item.context || '')}`,
-      `DESCRIPTION:${escapeIcs([item.phone, item.website, item.mapsLink].filter(Boolean).join(' | '))}`
+      `DESCRIPTION:${escapeIcs(formatReminderOffsets(item.reminderOffsets || []))}`
     ];
 
     (item.reminderOffsets || []).forEach((minutes) => {
@@ -949,7 +1624,7 @@ async function importBackup(event) {
   try {
     const content = await file.text();
     const parsed = JSON.parse(content);
-    if (!parsed || (parsed.version && parsed.version !== 2)) {
+    if (!parsed || (parsed.version && ![2, 3].includes(parsed.version))) {
       syncStatus.textContent = t('settings.messages.importInvalidVersion');
       return;
     }
@@ -974,61 +1649,43 @@ function applyImportedState(payload, replaceFully) {
 }
 
 function getAllEvents() {
-  const appointmentEvents = state.appointments
-    .filter((item) => item.datetime)
-    .map((item) => ({
-      id: item.id,
-      source: 'appointment',
-      title: item.title,
-      datetime: item.datetime,
-      context: `${item.office} — ${item.address}`,
-      phone: item.phone,
-      mapsLink: item.mapsLink,
-      website: item.website,
-      reminderOffsets: item.reminderOffsets || []
-    }));
-
-  const subtaskEvents = CATEGORY_DEFINITIONS
-    .flatMap((category) => category.subtasks.map((subtask) => ({ category, subtask })))
-    .map(({ category, subtask }) => {
-      const itemState = ensureSubtaskState(subtask.id);
-      if (!itemState.targetDate) return null;
+  return CATEGORY_DEFINITIONS
+    .flatMap((section) => section.subtasks.map((task) => ({ section, task })))
+    .map(({ section, task }) => {
+      const taskState = ensureSubtaskState(task.id);
+      if (!taskState.targetDate) return null;
       return {
-        id: subtask.id,
-        source: 'subtask',
-        title: t(subtask.titleKey),
-        datetime: toLocalDateAtNineAmWithOffset(itemState.targetDate),
-        context: t(category.titleKey),
-        phone: '',
-        mapsLink: '',
-        website: '',
-        reminderOffsets: itemState.reminderOffsets || []
+        id: task.id,
+        source: 'task',
+        title: t(task.titleKey),
+        datetime: toLocalDateAtNineAmWithOffset(taskState.targetDate),
+        dateOnly: taskState.targetDate,
+        context: t(section.titleKey),
+        reminderOffsets: taskState.reminderOffsets || []
       };
     })
     .filter(Boolean);
-
-  return [...appointmentEvents, ...subtaskEvents];
 }
 
-function computeCategoryProgress(category) {
-  const done = category.subtasks.filter((subtask) => ensureSubtaskState(subtask.id).done).length;
-  const total = category.subtasks.length;
+function computeCategoryProgress(section) {
+  const done = section.subtasks.filter((task) => ensureSubtaskState(task.id).done).length;
+  const total = section.subtasks.length;
   const percent = total ? Math.round((done / total) * 100) : 0;
   return { done, total, percent };
 }
 
 function getOverallProgress() {
-  const allSubtasks = CATEGORY_DEFINITIONS.flatMap((category) => category.subtasks);
-  const done = allSubtasks.filter((subtask) => ensureSubtaskState(subtask.id).done).length;
-  const total = allSubtasks.length;
+  const tasks = CATEGORY_DEFINITIONS.flatMap((section) => section.subtasks);
+  const done = tasks.filter((task) => ensureSubtaskState(task.id).done).length;
+  const total = tasks.length;
   return { done, total, percent: total ? Math.round((done / total) * 100) : 0 };
 }
 
-function ensureSubtaskState(subtaskId) {
-  if (!state.subtaskState[subtaskId]) {
-    state.subtaskState[subtaskId] = defaultSubtaskState();
+function ensureSubtaskState(taskId) {
+  if (!state.subtaskState[taskId]) {
+    state.subtaskState[taskId] = defaultSubtaskState();
   }
-  return state.subtaskState[subtaskId];
+  return state.subtaskState[taskId];
 }
 
 function defaultSubtaskState() {
@@ -1044,28 +1701,40 @@ function defaultSubtaskState() {
 
 function loadAppState() {
   const base = {
-    version: 2,
+    version: 3,
     subtaskState: {},
-    appointments: [],
     documents: [],
     reminders: { fired: {}, notificationPermission: 'default', updated_at: nowIso() },
-    learningProgress: { completedLessons: 0, totalLessons: 20, updated_at: nowIso() },
-    settings: { workspaceId: 'default-workspace' },
-    sync: { lastSyncedAt: '' }
+    learning: { history: [], activeAttempt: null, updated_at: nowIso() },
+    settings: { workspaceId: 'default-workspace', updated_at: nowIso() },
+    sync: { lastSyncedAt: '', updated_at: nowIso() },
+    ui: { sectionDocumentFilters: {} },
+    updated_at: nowIso()
   };
 
-  const stored = loadJSON(STORAGE_KEYS.state, null);
-  const merged = sanitizePayload(stored || base);
+  const storedV3 = loadJSON(STORAGE_KEYS.state, null);
+  if (storedV3) {
+    const mergedV3 = sanitizePayload(storedV3);
+    ensureAllTaskStates(mergedV3);
+    return mergedV3;
+  }
+
+  const legacyV2 = loadJSON(STORAGE_KEYS.legacyStateV2, null);
+  const merged = sanitizePayload(legacyV2 || base);
 
   migrateLegacyChecklist(merged);
-
-  CATEGORY_DEFINITIONS.flatMap((category) => category.subtasks).forEach((subtask) => {
-    if (!merged.subtaskState[subtask.id]) {
-      merged.subtaskState[subtask.id] = defaultSubtaskState();
-    }
-  });
+  migrateLegacyStateTasks(merged, legacyV2 || {});
+  ensureAllTaskStates(merged);
 
   return merged;
+}
+
+function ensureAllTaskStates(targetState) {
+  CATEGORY_DEFINITIONS.flatMap((section) => section.subtasks).forEach((task) => {
+    if (!targetState.subtaskState[task.id]) {
+      targetState.subtaskState[task.id] = defaultSubtaskState();
+    }
+  });
 }
 
 function migrateLegacyChecklist(targetState) {
@@ -1073,35 +1742,104 @@ function migrateLegacyChecklist(targetState) {
   if (!legacy) return;
 
   Object.entries(legacy).forEach(([legacyId, done]) => {
-    const subtaskId = LEGACY_TASK_MIGRATION[legacyId];
-    if (!subtaskId) return;
-    const subtaskState = targetState.subtaskState[subtaskId] || defaultSubtaskState();
-    if (done) {
-      subtaskState.done = true;
-      subtaskState.completedAt = subtaskState.completedAt || nowIso();
-    }
-    targetState.subtaskState[subtaskId] = subtaskState;
+    const taskId = LEGACY_TASK_MIGRATION[legacyId];
+    if (!taskId || !done) return;
+    const taskState = targetState.subtaskState[taskId] || defaultSubtaskState();
+    taskState.done = true;
+    taskState.completedAt = taskState.completedAt || nowIso();
+    taskState.updated_at = nowIso();
+    targetState.subtaskState[taskId] = taskState;
   });
+}
+
+function migrateLegacyStateTasks(targetState, legacyState) {
+  const legacyTaskState = legacyState?.subtaskState && typeof legacyState.subtaskState === 'object'
+    ? legacyState.subtaskState
+    : {};
+
+  Object.entries(legacyTaskState).forEach(([legacyTaskId, oldState]) => {
+    const mappedTaskId = LEGACY_TASK_MIGRATION[legacyTaskId];
+    if (!mappedTaskId) return;
+
+    const existing = targetState.subtaskState[mappedTaskId] || defaultSubtaskState();
+    const merged = {
+      ...existing,
+      done: existing.done || Boolean(oldState?.done),
+      targetDate: existing.targetDate || (oldState?.targetDate || ''),
+      notes: existing.notes || (oldState?.notes || ''),
+      reminderOffsets: (existing.reminderOffsets && existing.reminderOffsets.length)
+        ? existing.reminderOffsets
+        : parseReminderOffsets(formatReminderOffsets(oldState?.reminderOffsets || [])),
+      completedAt: existing.completedAt || oldState?.completedAt || '',
+      updated_at: maxIso(existing.updated_at, oldState?.updated_at) || nowIso()
+    };
+
+    targetState.subtaskState[mappedTaskId] = merged;
+  });
+
+  const migratedLegacyDocuments = (legacyState?.documents || []).map((doc) => {
+    const mappedTaskId = LEGACY_TASK_MIGRATION[doc.linkedTaskId] || doc.linkedTaskId || '';
+    const section = getSectionForTask(mappedTaskId);
+    return {
+      id: doc.id || createId(),
+      linkedTaskId: mappedTaskId,
+      sectionId: section?.id || '',
+      name: doc.name || '',
+      docType: doc.category || doc.docType || 'other',
+      fileName: doc.fileName || '',
+      fileUrl: doc.fileUrl || '',
+      fileDataUrl: doc.fileDataUrl || '',
+      storageProvider: doc.storageProvider || 'metadata-only',
+      createdAt: doc.createdAt || doc.updated_at || nowIso(),
+      updated_at: doc.updated_at || nowIso()
+    };
+  });
+
+  targetState.documents = mergeEntityArrays(targetState.documents || [], migratedLegacyDocuments);
 }
 
 function sanitizePayload(payload) {
   const safe = payload || {};
+  const reminders = safe.reminders && typeof safe.reminders === 'object' ? safe.reminders : { fired: {}, notificationPermission: 'default', updated_at: nowIso() };
+  const learning = safe.learning && typeof safe.learning === 'object'
+    ? safe.learning
+    : safe.learningProgress && typeof safe.learningProgress === 'object'
+      ? {
+          history: safe.learningProgress.history || [],
+          activeAttempt: null,
+          updated_at: safe.learningProgress.updated_at || nowIso()
+        }
+      : { history: [], activeAttempt: null, updated_at: nowIso() };
+
   return {
-    version: 2,
+    version: 3,
     subtaskState: safe.subtaskState && typeof safe.subtaskState === 'object' ? safe.subtaskState : {},
-    appointments: Array.isArray(safe.appointments) ? safe.appointments : [],
     documents: Array.isArray(safe.documents) ? safe.documents : [],
-    reminders: safe.reminders && typeof safe.reminders === 'object' ? safe.reminders : { fired: {}, notificationPermission: 'default', updated_at: nowIso() },
-    learningProgress: safe.learningProgress && typeof safe.learningProgress === 'object'
-      ? safe.learningProgress
-      : { completedLessons: 0, totalLessons: 20, updated_at: nowIso() },
-    settings: safe.settings && typeof safe.settings === 'object' ? safe.settings : { workspaceId: 'default-workspace' },
-    sync: safe.sync && typeof safe.sync === 'object' ? safe.sync : { lastSyncedAt: '' }
+    reminders: {
+      fired: reminders.fired && typeof reminders.fired === 'object' ? reminders.fired : {},
+      notificationPermission: reminders.notificationPermission || 'default',
+      updated_at: reminders.updated_at || nowIso()
+    },
+    learning: {
+      history: Array.isArray(learning.history) ? learning.history : [],
+      activeAttempt: learning.activeAttempt || null,
+      updated_at: learning.updated_at || nowIso()
+    },
+    settings: safe.settings && typeof safe.settings === 'object'
+      ? { ...safe.settings, workspaceId: safe.settings.workspaceId || 'default-workspace', updated_at: safe.settings.updated_at || nowIso() }
+      : { workspaceId: 'default-workspace', updated_at: nowIso() },
+    sync: safe.sync && typeof safe.sync === 'object'
+      ? { ...safe.sync, lastSyncedAt: safe.sync.lastSyncedAt || '', updated_at: safe.sync.updated_at || nowIso() }
+      : { lastSyncedAt: '', updated_at: nowIso() },
+    ui: safe.ui && typeof safe.ui === 'object'
+      ? { sectionDocumentFilters: safe.ui.sectionDocumentFilters || {} }
+      : { sectionDocumentFilters: {} },
+    updated_at: safe.updated_at || nowIso()
   };
 }
 
 function saveState() {
-  saveJSON(STORAGE_KEYS.state, getLocallyPersistedState(state));
+  saveJSON(STORAGE_KEYS.state, sanitizePayload(state));
 }
 
 function saveStateAndRender() {
@@ -1113,19 +1851,13 @@ function serializeStateForSync() {
   return sanitizePayload(state);
 }
 
-function getLocallyPersistedState(sourceState) {
-  const payload = sanitizePayload(sourceState);
-  return {
-    ...payload,
-    appointments: [],
-    documents: []
-  };
+function getSubtaskTitle(taskId) {
+  const task = CATEGORY_DEFINITIONS.flatMap((section) => section.subtasks).find((item) => item.id === taskId);
+  return task ? t(task.titleKey) : t('documents.unlinked');
 }
 
-function getSubtaskTitle(subtaskId) {
-  const allSubtasks = CATEGORY_DEFINITIONS.flatMap((category) => category.subtasks);
-  const subtask = allSubtasks.find((item) => item.id === subtaskId);
-  return subtask ? t(subtask.titleKey) : t('documents.unlinked');
+function getSectionForTask(taskId) {
+  return CATEGORY_DEFINITIONS.find((section) => section.subtasks.some((task) => task.id === taskId)) || null;
 }
 
 function parseReminderOffsets(value) {
@@ -1150,7 +1882,7 @@ function parseSingleReminderOffset(token) {
 }
 
 function formatReminderOffsets(offsets) {
-  if (!offsets || !offsets.length) return t('appointments.none');
+  if (!offsets || !offsets.length) return t('tasks.noReminders');
   return offsets.map((offset) => {
     if (offset % (60 * 24) === 0) return `${offset / (60 * 24)}d`;
     if (offset % 60 === 0) return `${offset / 60}h`;
@@ -1158,29 +1890,138 @@ function formatReminderOffsets(offsets) {
   }).join(', ');
 }
 
-function getExpiryInfo(expiryDate) {
-  if (!expiryDate) {
-    return { daysLeft: Number.POSITIVE_INFINITY, isExpired: false, message: t('documents.expiryUnknown') };
-  }
+function getDueInfo(targetDate, done) {
+  if (!targetDate) return { level: 'none', text: t('tasks.noDate') };
+  if (done) return { level: 'done', text: t('tasks.done') };
 
   const today = new Date();
   const localMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-  const target = new Date(`${expiryDate}T00:00:00`);
-  if (Number.isNaN(target.getTime())) {
-    return { daysLeft: Number.POSITIVE_INFINITY, isExpired: false, message: t('documents.expiryUnknown') };
-  }
+  const target = new Date(`${targetDate}T00:00:00`);
   const diffMs = target - localMidnight;
-  const daysLeft = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+  const days = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
 
-  if (daysLeft < 0) {
-    return { daysLeft, isExpired: true, message: t('documents.expired') };
+  if (days < 0) return { level: 'overdue', text: t('tasks.overdue') };
+  if (days <= 7) return { level: 'soon', text: t('tasks.dueIn').replace('{days}', String(days)) };
+  return { level: 'future', text: t('tasks.dueIn').replace('{days}', String(days)) };
+}
+
+function getSectionDocuments(sectionId, filterState) {
+  return state.documents.filter((doc) => {
+    const sameSection = getSectionForTask(doc.linkedTaskId)?.id === sectionId;
+    if (!sameSection) return false;
+    if (filterState.taskId !== 'all' && doc.linkedTaskId !== filterState.taskId) return false;
+    if (filterState.docType !== 'all' && doc.docType !== filterState.docType) return false;
+    return true;
+  });
+}
+
+function getMissingDocumentsForFilters(sectionId, taskId) {
+  const sections = CATEGORY_DEFINITIONS.filter((section) => sectionId === 'all' || section.id === sectionId);
+  const missing = [];
+
+  sections.forEach((section) => {
+    section.subtasks.forEach((task) => {
+      if (taskId !== 'all' && task.id !== taskId) return;
+      (task.requiredDocs || []).forEach((requiredType) => {
+        const hasDoc = state.documents.some((doc) => doc.linkedTaskId === task.id && doc.docType === requiredType);
+        if (!hasDoc) missing.push(`${t(task.titleKey)} → ${getDocTypeLabel(requiredType)}`);
+      });
+    });
+  });
+
+  return missing;
+}
+
+function getSectionMissingDocuments(section) {
+  return getMissingDocumentsForFilters(section.id, 'all');
+}
+
+function buildDocumentTypeOptions(requiredDocs) {
+  const options = [...new Set([...(requiredDocs || []), 'other'])];
+  return options.map((option) => `<option value="${escapeAttribute(option)}">${escapeHtml(getDocTypeLabel(option))}</option>`).join('');
+}
+
+function buildSectionTaskFilterOptions(section, selected) {
+  const options = [`<option value="all">${t('documents.filterAllTasks')}</option>`];
+  section.subtasks.forEach((task) => {
+    options.push(`<option value="${task.id}" ${selected === task.id ? 'selected' : ''}>${escapeHtml(t(task.titleKey))}</option>`);
+  });
+  return options.join('');
+}
+
+function buildSectionTypeFilterOptions(section, selected) {
+  const types = new Set();
+  section.subtasks.forEach((task) => {
+    (task.requiredDocs || []).forEach((item) => types.add(item));
+  });
+  state.documents
+    .filter((doc) => getSectionForTask(doc.linkedTaskId)?.id === section.id)
+    .forEach((doc) => {
+      if (doc.docType) types.add(doc.docType);
+    });
+
+  const options = [`<option value="all">${t('documents.filterAllTypes')}</option>`];
+  [...types].sort().forEach((docType) => {
+    options.push(`<option value="${escapeAttribute(docType)}" ${selected === docType ? 'selected' : ''}>${escapeHtml(getDocTypeLabel(docType))}</option>`);
+  });
+  return options.join('');
+}
+
+function getDocTypeLabel(type) {
+  const key = DOC_TYPE_LABELS[type];
+  if (!key) return type || t('documents.typeOther');
+  return t(key);
+}
+
+function getSafeDocumentUrl(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  if (raw.startsWith('data:image/') || raw.startsWith('data:application/pdf')) return raw;
+  if (raw.startsWith('blob:')) return raw;
+  try {
+    const parsed = new URL(raw, window.location.origin);
+    return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.toString() : '';
+  } catch {
+    return '';
   }
+}
 
-  if (daysLeft <= 30) {
-    return { daysLeft, isExpired: false, message: t('documents.expiringSoon').replace('{days}', String(daysLeft)) };
-  }
+function getLearningRemainingSeconds(attempt) {
+  const started = parseDate(attempt.startedAt);
+  const durationMs = (attempt.durationMinutes || 0) * 60 * 1000;
+  const now = Date.now();
+  const elapsed = now - started;
+  return Math.max(0, Math.ceil((durationMs - elapsed) / 1000));
+}
 
-  return { daysLeft, isExpired: false, message: t('documents.valid').replace('{days}', String(daysLeft)) };
+function formatSeconds(seconds) {
+  const safe = Math.max(0, Number(seconds) || 0);
+  const mins = String(Math.floor(safe / 60)).padStart(2, '0');
+  const secs = String(safe % 60).padStart(2, '0');
+  return `${mins}:${secs}`;
+}
+
+async function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ''));
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+}
+
+function refreshBottomNavActiveState() {
+  const sections = bottomNavButtons.map((button) => ({
+    button,
+    section: document.getElementById(button.dataset.target)
+  })).filter((entry) => entry.section);
+
+  const viewportMid = window.scrollY + window.innerHeight * 0.4;
+  sections.forEach(({ button, section }) => {
+    const top = section.offsetTop;
+    const bottom = top + section.offsetHeight;
+    button.classList.toggle('active', viewportMid >= top && viewportMid <= bottom);
+  });
 }
 
 function t(path) {
@@ -1258,16 +2099,6 @@ function safeStorageName(text) {
     .replace(/[^a-zA-Z0-9._-]/g, '-')
     .replace(/-+/g, '-')
     .slice(0, 120);
-}
-
-function normalizeHttpUrl(value) {
-  if (!value) return '';
-  try {
-    const parsed = new URL(value);
-    return parsed.protocol === 'http:' || parsed.protocol === 'https:' ? parsed.toString() : '';
-  } catch {
-    return '';
-  }
 }
 
 function escapeHtml(value) {

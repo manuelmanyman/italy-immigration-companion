@@ -1,62 +1,50 @@
 # Italy Immigration Companion
 
-Task-centric, multilingual (EN/IT/DE) PWA for organizing immigration workflows in Italy.
+Mobile-first, multilingual (EN/IT/DE) PWA for the **Italy Registration Checklist** workflow.
 
-## Features
+## What changed
 
-- Hierarchical workflow:
-  - Categories (address change, permesso, marriage registration)
-  - Nested subtasks with stable IDs
-  - Per-subtask checkbox, target date, notes, reminder offsets
-- Progress tracking:
-  - Per-category progress bars
-  - Overall progress bar
-  - Dashboard with next 5 pending items by nearest date
-- Calendar and timeline:
-  - Unified timeline of appointments + dated subtasks
-  - Quick actions (phone, map, office website)
-  - ICS export per event and all events
-- Reminders:
-  - Reminder offsets (`7d`, `1d`, `2h`)
-  - In-app alerts + browser notification permission flow
-  - Local reminder scheduling, structured for future server push reminders
-- Document vault:
-  - Global and per-task filtered views
-  - Device upload and camera capture inputs
-  - Metadata: `name`, `category`, `issueDate`, `expiryDate`, `linkedTaskId`
-  - Supabase storage upload when configured/signed-in, local metadata fallback otherwise
-- Sync and auth (Supabase):
-  - Email/password auth
-  - Shared workspace payload sync
-  - Last-write-wins merge using `updated_at`
-  - Completion timestamp protection during merges
-- Data handling:
-  - Migration from legacy checklist state
-  - JSON backup export/import
-  - Local persistence keeps workflow/reminder/settings metadata; appointments/documents remain session-only unless synced/exported
+- Canonical checklist structure restored:
+  - 8 sections
+  - 34 tasks
+  - links/offices block
+- Task-first workflow:
+  - no standalone appointment creator
+  - each task has done/date/reminders/notes/documents actions
+- Task-linked documents:
+  - upload PDF/image from device or email download
+  - mobile camera capture support (`capture="environment"`)
+  - every document is auto-linked to its task (`linkedTaskId`)
+- Section document center:
+  - each section shows all linked docs
+  - filter by task and document type
+  - missing required-document indicators
+- Timeline/reminders:
+  - upcoming timeline is sourced from task due dates/reminder offsets
+  - ICS export is generated from task reminders
+- B2 module:
+  - timed mock-test modes (full, reading, grammar/use-of-language, listening placeholder)
+  - score report and local history
 
 ## Project Structure
 
 - `/index.html` — app shell and sections
-- `/styles.css` — mobile-first styles and sticky bottom nav
-- `/app.js` — app logic, i18n, reminders, timeline, sync, migration
+- `/styles.css` — mobile-first styles, sticky bottom nav, touch targets
+- `/app.js` — checklist data, task workflow, reminder/timeline, documents, B2 tests, sync
 - `/locales/*.json` — EN/IT/DE translation keys
 - `/manifest.json`, `/service-worker.js`, `/icons/` — PWA assets
 
-## Setup and Run
-
-Run from an HTTP server (needed for locales/service worker):
+## Run
 
 ```bash
-cd <project-directory>
 python3 -m http.server 8080
 ```
 
-Open: `http://localhost:8080`
+Open `http://localhost:8080`.
 
-## Supabase Configuration
+## Supabase sync scaffolding
 
-No secrets are committed. Provide env config at runtime by defining `window.__APP_ENV__` before `app.js` loads:
+No secrets are committed. Provide runtime config before `app.js`:
 
 ```html
 <script>
@@ -69,26 +57,18 @@ No secrets are committed. Provide env config at runtime by defining `window.__AP
 
 Expected backend resources:
 
-- Table `workspace_states`:
-  - `workspace_id` (text, primary/unique)
-  - `payload` (json/jsonb)
-  - `updated_at` (timestamp/timestamptz)
-- Storage bucket `documents` (public or policy-configured for signed users)
+- Table `workspace_states` (`workspace_id`, `payload`, `updated_at`)
+- Storage bucket `documents`
 
-## Permissions
+## Permissions guidance
 
-- **Camera**: document capture input uses `accept="image/*" capture="environment"`
-- **Notifications**: click “Enable notifications” in Settings
-
-## PWA Install
-
-- **Android (Chrome)**: menu → Install app / Add to Home screen
-- **iOS (Safari)**: Share → Add to Home Screen
+- **Camera**: task document capture uses `accept="image/*" capture="environment"`
+- **Notifications**: enable in Settings for reminder alerts
 
 ## Backup
 
 - Export JSON backup from Settings
-- Import JSON backup from Settings (merge flow with confirmation)
+- Import JSON backup from Settings (merge flow)
 
 ## Legal Disclaimer
 
