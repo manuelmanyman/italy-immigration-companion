@@ -608,10 +608,6 @@ function installPwaWiring() {
     installBtn.hidden = true;
   });
 
-  window.addEventListener('focus', () => {
-    swRegistration?.update().catch(() => {});
-  });
-
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) {
       swRegistration?.update().catch(() => {});

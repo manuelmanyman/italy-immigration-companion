@@ -109,15 +109,16 @@ async function handleNavigationRequest(request) {
 async function handleStaticAssetRequest(request, event) {
   const cache = await caches.open(APP_SHELL_CACHE);
   const cached = await cache.match(request);
-  const networkPromise = fetchAndCache(request, cache);
 
   if (cached) {
-    event.waitUntil(networkPromise.catch(() => {}));
+    if (!isVersionedRequest(request)) {
+      event.waitUntil(fetchAndCache(request, cache).catch(() => {}));
+    }
     return cached;
   }
 
   try {
-    return await networkPromise;
+    return await fetchAndCache(request, cache);
   } catch {
     return Response.error();
   }
@@ -138,4 +139,8 @@ async function fetchAndCache(request, cache) {
     cache.put(request, response.clone()).catch(() => {});
   }
   return response;
+}
+
+function isVersionedRequest(request) {
+  return new URL(request.url).searchParams.has('v');
 }
