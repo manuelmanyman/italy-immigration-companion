@@ -523,10 +523,11 @@ init();
 async function init() {
   const savedLanguage = localStorage.getItem(STORAGE_KEYS.language) || 'en';
   const savedTheme = localStorage.getItem(STORAGE_KEYS.theme) || 'dark';
-  applyTheme(savedTheme);
+  document.documentElement.dataset.theme = savedTheme === 'light' ? 'light' : 'dark';
   themeToggle?.addEventListener('click', toggleTheme);
   languageSelect.value = savedLanguage;
   await Promise.all([setLanguage(savedLanguage), loadItalianTranslations()]);
+  applyTheme(savedTheme);
 
   languageSelect.addEventListener('change', async (event) => {
     await setLanguage(event.target.value);
@@ -1160,7 +1161,7 @@ function renderCalendarWidget() {
     <li class="item">
       <strong>${escapeHtml(event.title)}</strong>
       <p>${escapeHtml(event.context)}</p>
-      <p>${new Date(event.datetime).toLocaleDateString()}</p>
+      <p>${escapeHtml(formatTaskDateForDisplay(event.dateOnly))}</p>
     </li>
   `).join('');
 }
@@ -1427,13 +1428,6 @@ async function onCategorySubmit(event) {
     file = captureFile instanceof File && captureFile.size > 0 ? captureFile : null;
   } else {
     file = uploadFile instanceof File && uploadFile.size > 0 ? uploadFile : null;
-  }
-  if (!file) {
-    file = uploadFile instanceof File && uploadFile.size > 0
-      ? uploadFile
-      : captureFile instanceof File && captureFile.size > 0
-        ? captureFile
-        : null;
   }
 
   const section = getSectionForTask(taskId);
@@ -2289,6 +2283,14 @@ function formatDisplayTimestamp(value) {
   if (!value) return '—';
   const date = new Date(value);
   return Number.isFinite(date.getTime()) ? date.toLocaleString() : value;
+}
+
+function formatTaskDateForDisplay(dateOnly) {
+  if (!dateOnly) return '';
+  const date = new Date(`${dateOnly}T00:00:00`);
+  if (!Number.isFinite(date.getTime())) return dateOnly;
+  const locale = document.documentElement.lang || localStorage.getItem(STORAGE_KEYS.language) || undefined;
+  return date.toLocaleDateString(locale);
 }
 
 function t(path) {

@@ -392,7 +392,7 @@
       },
       "listening2": {
         "prompt": "Ascolto (placeholder): Quale ufficio gestisce la certificazione apostille?",
-        "a": "Office of the Great Seal",
+        "a": "Ufficio del Gran Sigillo",
         "b": "Sportello immigrazione della Questura",
         "c": "Agenzia Entrate"
       }
