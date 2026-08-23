@@ -110,8 +110,17 @@ async function handleStaticAssetRequest(request, event) {
   const cache = await caches.open(APP_SHELL_CACHE);
   const cached = await cache.match(request);
   const networkPromise = fetchAndCache(request, cache);
-  event.waitUntil(networkPromise.catch(() => {}));
-  return cached || networkPromise || Response.error();
+
+  if (cached) {
+    event.waitUntil(networkPromise.catch(() => {}));
+    return cached;
+  }
+
+  try {
+    return await networkPromise;
+  } catch {
+    return Response.error();
+  }
 }
 
 async function handleRuntimeRequest(request) {
