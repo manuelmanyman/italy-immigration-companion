@@ -5,29 +5,55 @@
     "install": "Installa",
     "disclaimer": "Solo informazioni generali. Non costituisce consulenza legale."
   },
-  "common": {
-    "delete": "Elimina"
+  "nav": {
+    "dashboard": "Dashboard",
+    "tasks": "Attività",
+    "calendar": "Calendario",
+    "documents": "Documenti",
+    "learning": "Studio",
+    "settings": "Impostazioni"
   },
-  "checklist": {
-    "title": "Checklist immigrazione",
-    "tasks": {
-      "registerAddress": { "title": "Registra la residenza (Anagrafe)", "detail": "Presenta la dichiarazione di residenza al tuo comune." },
-      "applyTaxCode": { "title": "Richiedi il codice fiscale", "detail": "Ottieni il codice fiscale presso l'Agenzia delle Entrate." },
-      "bookResidencePermit": { "title": "Prenota appuntamento permesso di soggiorno", "detail": "Prenota e prepara la pratica per il permesso di soggiorno." },
-      "healthcareEnrollment": { "title": "Iscriviti al servizio sanitario", "detail": "Registrati a SSN/ASL se idoneo." },
-      "openBankAccount": { "title": "Apri un conto bancario italiano", "detail": "Porta documento, codice fiscale e prova di residenza." }
+  "common": {
+    "delete": "Elimina",
+    "empty": "Nessun elemento.",
+    "confirmDelete": "Eliminare questo elemento?"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "overallProgress": "Progresso totale",
+    "nextFive": "Prossimi 5 elementi in sospeso",
+    "alerts": "Promemoria",
+    "noAlerts": "Nessun promemoria attivo.",
+    "reminderTitle": "Promemoria immigrazione"
+  },
+  "tasks": {
+    "title": "Flusso attività",
+    "openCategory": "Apri",
+    "closeCategory": "Chiudi",
+    "targetDate": "Data obiettivo",
+    "notes": "Note",
+    "reminders": "Offset promemoria",
+    "noDate": "Nessuna data",
+    "categories": {
+      "changeAddress": { "title": "Cambio residenza legale" },
+      "permesso": { "title": "Permesso di soggiorno" },
+      "marriage": { "title": "Trascrizione matrimonio" }
+    },
+    "subtasks": {
+      "addressDocs": { "title": "Prepara documenti residenza", "detail": "Raccogli contratto affitto, documento e dichiarazioni utili." },
+      "addressAppointment": { "title": "Appuntamento Anagrafe", "detail": "Prenota e partecipa all'appuntamento comunale per residenza." },
+      "addressConfirmation": { "title": "Conferma pratica residenza", "detail": "Inserisci data prevista per controllo o lettera di conferma." },
+      "permessoKit": { "title": "Prepara kit permesso", "detail": "Prepara kit postale, fotocopie, foto e bollettini." },
+      "permessoPost": { "title": "Invia kit in posta", "detail": "Invia busta e salva ricevuta/tracking." },
+      "permessoQuestura": { "title": "Appuntamento Questura impronte", "detail": "Salva data appuntamento e documenti richiesti per biometria." },
+      "marriageCertificates": { "title": "Raccogli certificati matrimonio", "detail": "Prepara traduzioni legalizzate e stato civile." },
+      "marriageAppointment": { "title": "Appuntamento trascrizione al Comune", "detail": "Imposta data per registrazione matrimonio al Comune." },
+      "marriageTranscript": { "title": "Conferma trascrizione completata", "detail": "Controlla data completamento e ritira certificati aggiornati." }
     }
   },
   "appointments": {
-    "title": "Appuntamenti",
     "add": "Aggiungi appuntamento",
-    "exportAll": "Esporta tutto in ICS",
-    "exportOne": "Esporta ICS",
     "none": "Nessuno",
-    "maps": "Mappa",
-    "website": "Sito web",
-    "phone": "Telefono",
-    "reminders": "Promemoria",
     "fields": {
       "title": "Titolo",
       "office": "Ufficio",
@@ -35,20 +61,42 @@
       "mapsLink": "Link mappa",
       "phone": "Telefono",
       "website": "Sito web",
-      "reminders": "Offset promemoria (minuti, separati da virgola)"
+      "reminders": "Offset promemoria (7d,1d,2h)"
     }
+  },
+  "calendar": {
+    "title": "Calendario e timeline",
+    "empty": "Nessun appuntamento o sotto-attività con data.",
+    "call": "Chiama",
+    "map": "Mappa",
+    "website": "Sito",
+    "exportOne": "Esporta ICS",
+    "exportAll": "Esporta tutti gli eventi ICS",
+    "reminders": "Promemoria"
   },
   "documents": {
     "title": "Archivio documenti",
     "add": "Aggiungi documento",
-    "number": "Numero",
     "issueDate": "Data rilascio",
     "expiryDate": "Data scadenza",
-    "notes": "Note",
+    "linkedTask": "Attività collegata",
+    "file": "File",
+    "openFile": "Apri file",
+    "noFile": "Nessun file",
+    "empty": "Nessun documento in questa vista.",
+    "filter": "Filtra per attività",
+    "filterAll": "Tutte le attività",
+    "unlinked": "Non collegato",
     "expired": "Scaduto",
     "expiringSoon": "Scade tra {days} giorni",
     "valid": "Valido per altri {days} giorni",
-    "expiryUnknown": "Data di scadenza sconosciuta",
+    "expiryUnknown": "Data scadenza sconosciuta",
+    "messages": {
+      "metadataOnly": "Salvati solo i metadati.",
+      "localOnly": "Supabase non disponibile. Metadati salvati in locale.",
+      "uploaded": "Documento caricato su Supabase Storage.",
+      "uploadFailed": "Upload fallito. Metadati salvati in locale."
+    },
     "dashboard": {
       "total": "Documenti totali",
       "expired": "Scaduti",
@@ -56,23 +104,43 @@
       "expiring30": "Scadenza entro 30 giorni"
     },
     "fields": {
-      "title": "Titolo documento",
-      "category": "Categoria",
-      "number": "Numero documento",
-      "issueDate": "Data rilascio",
-      "expiryDate": "Data scadenza",
-      "notes": "Note"
+      "name": "Nome documento",
+      "category": "Categoria"
     }
   },
-  "nextActions": {
-    "title": "Prossime 3 azioni",
-    "allClear": "Tutto a posto: nessuna azione urgente al momento.",
-    "rules": {
-      "expiredDoc": "Rinnova documento scaduto: {doc}",
-      "expiringDoc": "Prepara rinnovo per {doc} (scade tra {days} giorni)",
-      "noAppointments": "Prenota il prossimo appuntamento necessario.",
-      "addReminder": "Aggiungi promemoria per appuntamento imminente: {title}",
-      "pendingTask": "Completa attività checklist: {task}"
+  "learning": {
+    "title": "Progresso studio",
+    "save": "Salva progresso studio",
+    "progress": "Lezioni"
+  },
+  "settings": {
+    "title": "Impostazioni e sincronizzazione",
+    "workspaceId": "ID workspace",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Accedi",
+    "signUp": "Crea account",
+    "signOut": "Esci",
+    "syncNow": "Sincronizza ora",
+    "enableNotifications": "Abilita notifiche",
+    "exportBackup": "Esporta backup JSON",
+    "messages": {
+      "supabaseMissing": "Env Supabase non configurato. Modalità locale attiva.",
+      "supabaseReady": "Supabase configurato. Accedi per sincronizzare.",
+      "supabaseLoadError": "Impossibile caricare client Supabase.",
+      "signedIn": "Accesso effettuato.",
+      "signedOut": "Disconnesso.",
+      "signUpCheckEmail": "Account creato. Controlla email per conferma.",
+      "authError": "Errore autenticazione",
+      "syncNeedsAuth": "Accedi prima di sincronizzare.",
+      "syncSuccess": "Sincronizzazione completata.",
+      "syncError": "Sincronizzazione fallita",
+      "notificationsGranted": "Notifiche abilitate.",
+      "notificationsDenied": "Notifiche non concesse.",
+      "importConfirm": "Importare backup e unire con i dati correnti?",
+      "importSuccess": "Backup importato con successo.",
+      "importError": "Import backup non riuscito.",
+      "importInvalidVersion": "Formato backup non supportato."
     }
   }
 }

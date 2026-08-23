@@ -1,70 +1,95 @@
 # Italy Immigration Companion
 
-Phase 1 delivers a framework-free (plain HTML/CSS/JS) Progressive Web App for immigration task tracking.
+Task-centric, multilingual (EN/IT/DE) PWA for organizing immigration workflows in Italy.
 
 ## Features
 
-- Installable PWA app shell (`manifest.json`, `service-worker.js`, offline cache)
-- Language switcher with persisted preference (`localStorage`) and JSON locale files:
-  - English: `/locales/en.json`
-  - Italian: `/locales/it.json`
-  - German: `/locales/de.json`
-- Immigration checklist with stable task IDs for durable persistence
-- Appointments module with:
-  - `title`, `datetime`, `office`, `address`, `mapsLink`, `phone`, `website`, `reminderOffsets`
-- ICS export:
-  - Single appointment
-  - All appointments
-- Document vault metadata storage with expiry warnings dashboard
-- Rule-based “Next 3 actions” panel
+- Hierarchical workflow:
+  - Categories (address change, permesso, marriage registration)
+  - Nested subtasks with stable IDs
+  - Per-subtask checkbox, target date, notes, reminder offsets
+- Progress tracking:
+  - Per-category progress bars
+  - Overall progress bar
+  - Dashboard with next 5 pending items by nearest date
+- Calendar and timeline:
+  - Unified timeline of appointments + dated subtasks
+  - Quick actions (phone, map, office website)
+  - ICS export per event and all events
+- Reminders:
+  - Reminder offsets (`7d`, `1d`, `2h`)
+  - In-app alerts + browser notification permission flow
+  - Local reminder scheduling, structured for future server push reminders
+- Document vault:
+  - Global and per-task filtered views
+  - Device upload and camera capture inputs
+  - Metadata: `name`, `category`, `issueDate`, `expiryDate`, `linkedTaskId`
+  - Supabase storage upload when configured/signed-in, local metadata fallback otherwise
+- Sync and auth (Supabase):
+  - Email/password auth
+  - Shared workspace payload sync
+  - Last-write-wins merge using `updated_at`
+  - Completion timestamp protection during merges
+- Data handling:
+  - Migration from legacy checklist state
+  - JSON backup export/import
+  - Local persistence keeps workflow/reminder/settings metadata; appointments/documents remain session-only unless synced/exported
 
 ## Project Structure
 
-- `/index.html` — app shell
-- `/styles.css` — styling
-- `/app.js` — app logic, persistence, i18n, rules, ICS exports
-- `/manifest.json` — web app manifest
-- `/service-worker.js` — offline caching
-- `/icons/` — icon placeholders
-- `/locales/` — translation files
+- `/index.html` — app shell and sections
+- `/styles.css` — mobile-first styles and sticky bottom nav
+- `/app.js` — app logic, i18n, reminders, timeline, sync, migration
+- `/locales/*.json` — EN/IT/DE translation keys
+- `/manifest.json`, `/service-worker.js`, `/icons/` — PWA assets
 
-## Local Setup
+## Setup and Run
 
-Because the app fetches JSON locale files and registers a service worker, run it through a local HTTP server.
-
-### Option 1: Python
+Run from an HTTP server (needed for locales/service worker):
 
 ```bash
 cd <project-directory>
 python3 -m http.server 8080
 ```
 
-Then open: `http://localhost:8080`
+Open: `http://localhost:8080`
 
-### Option 2: Node (serve)
+## Supabase Configuration
 
-```bash
-cd <project-directory>
-npx serve .
+No secrets are committed. Provide env config at runtime by defining `window.__APP_ENV__` before `app.js` loads:
+
+```html
+<script>
+  window.__APP_ENV__ = {
+    SUPABASE_URL: "https://YOUR_PROJECT.supabase.co",
+    SUPABASE_ANON_KEY: "YOUR_SUPABASE_ANON_KEY"
+  };
+</script>
 ```
 
-## Install as PWA
+Expected backend resources:
 
-1. Open the app in a Chromium-based browser.
-2. Use the in-app **Install** button when available.
-3. Or use the browser install prompt/menu.
+- Table `workspace_states`:
+  - `workspace_id` (text, primary/unique)
+  - `payload` (json/jsonb)
+  - `updated_at` (timestamp/timestamptz)
+- Storage bucket `documents` (public or policy-configured for signed users)
 
-## Data Storage
+## Permissions
 
-All data is stored locally in browser `localStorage` only:
+- **Camera**: document capture input uses `accept="image/*" capture="environment"`
+- **Notifications**: click “Enable notifications” in Settings
 
-- Language preference
-- Checklist completion state (keyed by stable task IDs)
+## PWA Install
 
-Appointments and document vault entries are kept in runtime memory and are cleared when the browser tab/app is closed.
+- **Android (Chrome)**: menu → Install app / Add to Home screen
+- **iOS (Safari)**: Share → Add to Home Screen
+
+## Backup
+
+- Export JSON backup from Settings
+- Import JSON backup from Settings (merge flow with confirmation)
 
 ## Legal Disclaimer
 
-This application is provided for informational and organizational purposes only.
-It is **not** legal advice, does not create a professional-client relationship, and may be incomplete or outdated.
-Always verify requirements with official Italian authorities or a qualified immigration professional.
+This application is for informational and organizational purposes only. It is **not legal advice**. Always verify legal requirements with official Italian authorities or a qualified immigration professional.

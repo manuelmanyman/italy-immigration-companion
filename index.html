@@ -25,52 +25,94 @@
     </header>
 
     <main>
-      <section class="panel">
-        <h2 data-i18n="nextActions.title">Next 3 actions</h2>
-        <ul id="next-actions" class="stack"></ul>
+      <section id="dashboard" class="panel">
+        <h2 data-i18n="dashboard.title">Dashboard</h2>
+        <div id="overall-progress" class="metric"></div>
+        <h3 data-i18n="dashboard.nextFive">Next 5 pending items</h3>
+        <ul id="next-pending-list" class="stack"></ul>
+        <h3 data-i18n="dashboard.alerts">Reminders</h3>
+        <ul id="reminder-alerts" class="stack"></ul>
       </section>
 
-      <section class="panel">
-        <h2 data-i18n="checklist.title">Immigration checklist</h2>
-        <ul id="task-list" class="stack"></ul>
+      <section id="tasks" class="panel">
+        <h2 data-i18n="tasks.title">Tasks</h2>
+        <div id="category-list" class="stack"></div>
       </section>
 
-      <section class="panel">
-        <h2 data-i18n="appointments.title">Appointments</h2>
+      <section id="calendar" class="panel">
+        <h2 data-i18n="calendar.title">Calendar & timeline</h2>
         <form id="appointment-form" class="form-grid">
           <input name="title" required data-i18n-placeholder="appointments.fields.title" placeholder="Title" />
           <input name="datetime" required type="datetime-local" />
           <input name="office" required data-i18n-placeholder="appointments.fields.office" placeholder="Office" />
           <input name="address" required data-i18n-placeholder="appointments.fields.address" placeholder="Address" />
-          <input name="mapsLink" type="url" data-i18n-placeholder="appointments.fields.mapsLink" placeholder="Google Maps link" />
+          <input name="mapsLink" type="url" data-i18n-placeholder="appointments.fields.mapsLink" placeholder="Maps link" />
           <input name="phone" data-i18n-placeholder="appointments.fields.phone" placeholder="Phone" />
           <input name="website" type="url" data-i18n-placeholder="appointments.fields.website" placeholder="Website" />
-          <input
-            name="reminderOffsets"
-            data-i18n-placeholder="appointments.fields.reminders"
-            placeholder="Reminder offsets (minutes, comma-separated)"
-          />
+          <input name="reminderOffsets" data-i18n-placeholder="appointments.fields.reminders" placeholder="7d,1d,2h" />
           <button type="submit" data-i18n="appointments.add">Add appointment</button>
-          <button id="export-all-appointments" type="button" data-i18n="appointments.exportAll">Export all as ICS</button>
+          <button id="export-all-events" type="button" data-i18n="calendar.exportAll">Export all events ICS</button>
         </form>
-        <ul id="appointments-list" class="stack"></ul>
+        <ul id="timeline-list" class="stack"></ul>
       </section>
 
-      <section class="panel">
+      <section id="documents" class="panel">
         <h2 data-i18n="documents.title">Document vault</h2>
+        <div id="document-status" class="muted"></div>
         <div id="document-dashboard" class="dashboard"></div>
+        <label>
+          <span data-i18n="documents.filter">Filter by task</span>
+          <select id="documents-filter" aria-label="Filter documents"></select>
+        </label>
         <form id="document-form" class="form-grid">
-          <input name="title" required data-i18n-placeholder="documents.fields.title" placeholder="Document title" />
+          <input name="name" required data-i18n-placeholder="documents.fields.name" placeholder="Document name" />
           <input name="category" required data-i18n-placeholder="documents.fields.category" placeholder="Category" />
-          <input name="number" data-i18n-placeholder="documents.fields.number" placeholder="Document number" />
-          <input name="issueDate" type="date" data-i18n-placeholder="documents.fields.issueDate" />
-          <input name="expiryDate" required type="date" data-i18n-placeholder="documents.fields.expiryDate" />
-          <input name="notes" data-i18n-placeholder="documents.fields.notes" placeholder="Notes" />
+          <input name="issueDate" type="date" />
+          <input name="expiryDate" type="date" />
+          <select name="linkedTaskId" id="linked-task-select" aria-label="Linked task"></select>
+          <input name="uploadFile" type="file" accept="image/*,.pdf" />
+          <input name="captureFile" type="file" accept="image/*" capture="environment" />
           <button type="submit" data-i18n="documents.add">Add document</button>
         </form>
         <ul id="documents-list" class="stack"></ul>
       </section>
+
+      <section id="learning" class="panel">
+        <h2 data-i18n="learning.title">Learning</h2>
+        <form id="learning-form" class="form-grid">
+          <input name="completedLessons" type="number" min="0" step="1" />
+          <input name="totalLessons" type="number" min="1" step="1" />
+          <button type="submit" data-i18n="learning.save">Save learning progress</button>
+        </form>
+        <div id="learning-summary" class="muted"></div>
+      </section>
+
+      <section id="settings" class="panel">
+        <h2 data-i18n="settings.title">Settings</h2>
+        <form id="sync-form" class="form-grid">
+          <input name="workspaceId" data-i18n-placeholder="settings.workspaceId" placeholder="Workspace ID" />
+          <input name="email" type="email" data-i18n-placeholder="settings.email" placeholder="Email" autocomplete="email" />
+          <input name="password" type="password" data-i18n-placeholder="settings.password" placeholder="Password" autocomplete="current-password" />
+          <button type="button" id="auth-signin" data-i18n="settings.signIn">Sign in</button>
+          <button type="button" id="auth-signup" data-i18n="settings.signUp">Create account</button>
+          <button type="button" id="auth-signout" data-i18n="settings.signOut">Sign out</button>
+          <button type="button" id="sync-now" data-i18n="settings.syncNow">Sync now</button>
+          <button type="button" id="request-notification" data-i18n="settings.enableNotifications">Enable notifications</button>
+          <button type="button" id="export-backup" data-i18n="settings.exportBackup">Export JSON backup</button>
+          <input id="import-backup-file" type="file" accept="application/json" />
+        </form>
+        <p id="sync-status" class="muted"></p>
+      </section>
     </main>
+
+    <nav class="bottom-nav" aria-label="Main sections">
+      <button data-target="dashboard" data-i18n="nav.dashboard">Dashboard</button>
+      <button data-target="tasks" data-i18n="nav.tasks">Tasks</button>
+      <button data-target="calendar" data-i18n="nav.calendar">Calendar</button>
+      <button data-target="documents" data-i18n="nav.documents">Documents</button>
+      <button data-target="learning" data-i18n="nav.learning">Learning</button>
+      <button data-target="settings" data-i18n="nav.settings">Settings</button>
+    </nav>
 
     <footer>
       <small data-i18n="app.disclaimer">Informational app only, not legal advice.</small>
