@@ -4,11 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0f766e" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <title>Italy Immigration Companion</title>
-    <link rel="manifest" href="./manifest.json" />
-    <link rel="icon" type="image/svg+xml" href="./icons/icon-192.svg" />
-    <link rel="apple-touch-icon" href="./icons/icon-192.svg" />
-    <link rel="stylesheet" href="./styles.css" />
+    <script>
+      window.__APP_VERSION__ = '2026.08.23.1';
+      window.__BUILD_TIMESTAMP__ = '2026-08-23T09:56:24.166Z';
+      window.__ASSET_VERSION__ = '2026.08.23.1';
+    </script>
+    <link rel="manifest" href="./manifest.json?v=2026.08.23.1" />
+    <link rel="icon" type="image/svg+xml" href="./icons/icon-192.svg?v=2026.08.23.1" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.svg?v=2026.08.23.1" />
+    <link rel="stylesheet" href="./styles.css?v=2026.08.23.1" />
   </head>
   <body>
     <header class="topbar">
@@ -23,6 +31,10 @@
         <button id="install-btn" type="button" hidden data-i18n="app.install">Install</button>
       </div>
     </header>
+    <div id="update-banner" class="update-banner" hidden>
+      <span data-i18n="updates.available">New version available.</span>
+      <button id="update-refresh-btn" type="button" data-i18n="updates.reload">Refresh now</button>
+    </div>
 
     <main>
       <section id="dashboard" class="panel">
@@ -105,6 +117,11 @@
           <input id="import-backup-file" type="file" accept="application/json" />
         </form>
         <p id="sync-status" class="muted"></p>
+        <div class="about-card">
+          <h3 data-i18n="settings.aboutTitle">About this app</h3>
+          <p id="app-version-info" class="muted"></p>
+          <p id="sw-version-info" class="muted"></p>
+        </div>
       </section>
     </main>
 
@@ -121,6 +138,6 @@
       <small data-i18n="app.disclaimer">Informational app only, not legal advice.</small>
     </footer>
 
-    <script src="./app.js" defer></script>
+    <script src="./app.js?v=2026.08.23.1" defer></script>
   </body>
 </html>

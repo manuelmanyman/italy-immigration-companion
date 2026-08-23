@@ -5,6 +5,10 @@ const STORAGE_KEYS = {
   legacyChecklist: 'iic_checklist_v1'
 };
 
+const APP_VERSION = window.__APP_VERSION__ || 'dev';
+const BUILD_TIMESTAMP = window.__BUILD_TIMESTAMP__ || '';
+const ASSET_VERSION = window.__ASSET_VERSION__ || APP_VERSION;
+
 const REMINDER_PRESETS = ['7d', '1d', '2h'];
 
 const CATEGORY_DEFINITIONS = [
@@ -449,9 +453,15 @@ let authSession = null;
 let inAppAlerts = [];
 let learningTimer = null;
 let reminderTimer = null;
+let swRegistration = null;
+let swDiagnostics = null;
+let updateReady = false;
+let reloadOnControllerChange = false;
 
 const languageSelect = document.getElementById('language-select');
 const installBtn = document.getElementById('install-btn');
+const updateBanner = document.getElementById('update-banner');
+const updateRefreshBtn = document.getElementById('update-refresh-btn');
 const categoryList = document.getElementById('category-list');
 const nextPendingList = document.getElementById('next-pending-list');
 const overallProgress = document.getElementById('overall-progress');
@@ -481,6 +491,8 @@ const requestNotificationBtn = document.getElementById('request-notification');
 const exportBackupBtn = document.getElementById('export-backup');
 const importBackupInput = document.getElementById('import-backup-file');
 const syncStatus = document.getElementById('sync-status');
+const appVersionInfo = document.getElementById('app-version-info');
+const swVersionInfo = document.getElementById('sw-version-info');
 const bottomNavButtons = Array.from(document.querySelectorAll('.bottom-nav button'));
 
 const notificationService = {
@@ -554,6 +566,7 @@ async function init() {
 
   exportBackupBtn.addEventListener('click', exportBackup);
   importBackupInput.addEventListener('change', importBackup);
+  updateRefreshBtn?.addEventListener('click', applyServiceWorkerUpdate);
 
   bottomNavButtons.forEach((button) => {
     button.addEventListener('click', () => {
@@ -575,7 +588,9 @@ async function init() {
 
 function installPwaWiring() {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+    registerServiceWorker().catch(() => {
+      renderVersionDiagnostics();
+    });
   }
 
   window.addEventListener('beforeinstallprompt', (event) => {
@@ -591,6 +606,146 @@ function installPwaWiring() {
     deferredInstallPrompt = null;
     installBtn.hidden = true;
   });
+
+  window.addEventListener('focus', () => {
+    swRegistration?.update().catch(() => {});
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      swRegistration?.update().catch(() => {});
+    }
+  });
+}
+
+async function registerServiceWorker() {
+  const registration = await navigator.serviceWorker.register(versionedAssetUrl('./service-worker.js'));
+  swRegistration = registration;
+
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!reloadOnControllerChange) return;
+    reloadOnControllerChange = false;
+    window.location.reload();
+  });
+
+  monitorServiceWorker(registration);
+  await refreshServiceWorkerDiagnostics(registration);
+
+  if (registration.waiting && navigator.serviceWorker.controller) {
+    updateReady = true;
+    renderUpdateBanner();
+  }
+
+  navigator.serviceWorker.ready
+    .then(async (readyRegistration) => {
+      swRegistration = readyRegistration;
+      await refreshServiceWorkerDiagnostics(readyRegistration);
+    })
+    .catch(() => {});
+}
+
+function monitorServiceWorker(registration) {
+  registration.addEventListener('updatefound', () => {
+    const worker = registration.installing;
+    if (!worker) return;
+
+    worker.addEventListener('statechange', async () => {
+      await refreshServiceWorkerDiagnostics(registration);
+
+      if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+        updateReady = true;
+        renderUpdateBanner();
+      }
+    });
+  });
+}
+
+async function refreshServiceWorkerDiagnostics(registration) {
+  const worker = registration.waiting || registration.active || registration.installing;
+  if (!worker) {
+    swDiagnostics = null;
+    renderVersionDiagnostics();
+    return;
+  }
+
+  const metadata = await requestServiceWorkerMetadata(worker);
+  swDiagnostics = {
+    state: worker.state || '',
+    version: metadata?.version || '',
+    buildTimestamp: metadata?.buildTimestamp || '',
+    isWaiting: Boolean(registration.waiting),
+    isControllingPage: Boolean(navigator.serviceWorker.controller)
+  };
+  renderVersionDiagnostics();
+}
+
+function requestServiceWorkerMetadata(worker) {
+  return new Promise((resolve) => {
+    const channel = new MessageChannel();
+    const timeoutId = window.setTimeout(() => resolve(null), 1500);
+
+    channel.port1.onmessage = (event) => {
+      window.clearTimeout(timeoutId);
+      resolve(event.data || null);
+    };
+
+    try {
+      worker.postMessage({ type: 'GET_VERSION' }, [channel.port2]);
+    } catch {
+      window.clearTimeout(timeoutId);
+      resolve(null);
+    }
+  });
+}
+
+function renderUpdateBanner() {
+  if (!updateBanner) return;
+  updateBanner.hidden = !updateReady;
+}
+
+function applyServiceWorkerUpdate() {
+  updateReady = false;
+  renderUpdateBanner();
+
+  if (swRegistration?.waiting) {
+    reloadOnControllerChange = true;
+    swRegistration.waiting.postMessage({ type: 'SKIP_WAITING' });
+    return;
+  }
+
+  window.location.reload();
+}
+
+function renderVersionDiagnostics() {
+  if (appVersionInfo) {
+    appVersionInfo.textContent = `${t('settings.appVersionLabel')}: ${APP_VERSION} · ${t('settings.buildTimestampLabel')}: ${formatDisplayTimestamp(BUILD_TIMESTAMP)}`;
+  }
+
+  if (!swVersionInfo) return;
+
+  if (!('serviceWorker' in navigator)) {
+    swVersionInfo.textContent = `${t('settings.serviceWorkerVersionLabel')}: ${t('settings.serviceWorkerUnsupported')}`;
+    return;
+  }
+
+  if (!swDiagnostics) {
+    swVersionInfo.textContent = `${t('settings.serviceWorkerVersionLabel')}: ${t('settings.serviceWorkerUnavailable')}`;
+    return;
+  }
+
+  const parts = [
+    `${t('settings.serviceWorkerVersionLabel')}: ${swDiagnostics.version || t('settings.serviceWorkerUnavailable')}`,
+    `${t('settings.serviceWorkerStatusLabel')}: ${getServiceWorkerStatusLabel(swDiagnostics)}`,
+    `${t('settings.buildTimestampLabel')}: ${formatDisplayTimestamp(swDiagnostics.buildTimestamp || BUILD_TIMESTAMP)}`
+  ];
+  swVersionInfo.textContent = parts.join(' · ');
+}
+
+function getServiceWorkerStatusLabel(diagnostics) {
+  if (diagnostics.isWaiting) return t('settings.serviceWorkerWaiting');
+  if (diagnostics.state === 'installing') return t('settings.serviceWorkerInstalling');
+  if (diagnostics.state === 'activated' || diagnostics.isControllingPage) return t('settings.serviceWorkerActive');
+  return diagnostics.state || t('settings.serviceWorkerUnavailable');
 }
 
 async function initSupabase() {
@@ -751,7 +906,7 @@ function mergeByUpdated(localItem, remoteItem) {
 }
 
 async function setLanguage(language) {
-  const response = await fetch(`./locales/${language}.json`);
+  const response = await fetch(versionedAssetUrl(`./locales/${language}.json`), { cache: 'no-store' });
   if (!response.ok) return;
   translations = await response.json();
   localStorage.setItem(STORAGE_KEYS.language, language);
@@ -781,6 +936,8 @@ function renderAll() {
   renderLearning();
   renderReminderAlerts();
   refreshBottomNavActiveState();
+  renderUpdateBanner();
+  renderVersionDiagnostics();
 }
 
 function renderTasks() {
@@ -2022,6 +2179,17 @@ function refreshBottomNavActiveState() {
     const bottom = top + section.offsetHeight;
     button.classList.toggle('active', viewportMid >= top && viewportMid <= bottom);
   });
+}
+
+function versionedAssetUrl(path) {
+  const separator = path.includes('?') ? '&' : '?';
+  return `${path}${separator}v=${encodeURIComponent(ASSET_VERSION)}`;
+}
+
+function formatDisplayTimestamp(value) {
+  if (!value) return '—';
+  const date = new Date(value);
+  return Number.isFinite(date.getTime()) ? date.toLocaleString() : value;
 }
 
 function t(path) {

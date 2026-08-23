@@ -387,8 +387,22 @@
     },
     "alreadyRunning": "Ein Test läuft bereits. Bitte abschließen oder Timeout abwarten."
   },
+  "updates": {
+    "available": "Neue Version verfügbar.",
+    "reload": "Jetzt aktualisieren"
+  },
   "settings": {
     "title": "Einstellungen & Sync",
+    "aboutTitle": "Über diese App",
+    "appVersionLabel": "App-Version",
+    "buildTimestampLabel": "Build-Zeitstempel",
+    "serviceWorkerVersionLabel": "Service-Worker-Version",
+    "serviceWorkerStatusLabel": "Service-Worker-Status",
+    "serviceWorkerUnsupported": "In diesem Browser nicht unterstützt",
+    "serviceWorkerUnavailable": "Noch nicht aktiv",
+    "serviceWorkerInstalling": "Update wird installiert",
+    "serviceWorkerWaiting": "Update bereit — zum Anwenden neu laden",
+    "serviceWorkerActive": "Aktiv",
     "workspaceId": "Workspace-ID",
     "email": "E-Mail",
     "password": "Passwort",
