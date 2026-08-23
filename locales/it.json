@@ -1,0 +1,78 @@
+{
+  "app": {
+    "title": "Compagno Immigrazione Italia",
+    "language": "Lingua",
+    "install": "Installa",
+    "disclaimer": "Solo informazioni generali. Non costituisce consulenza legale."
+  },
+  "common": {
+    "delete": "Elimina"
+  },
+  "checklist": {
+    "title": "Checklist immigrazione",
+    "tasks": {
+      "registerAddress": { "title": "Registra la residenza (Anagrafe)", "detail": "Presenta la dichiarazione di residenza al tuo comune." },
+      "applyTaxCode": { "title": "Richiedi il codice fiscale", "detail": "Ottieni il codice fiscale presso l'Agenzia delle Entrate." },
+      "bookResidencePermit": { "title": "Prenota appuntamento permesso di soggiorno", "detail": "Prenota e prepara la pratica per il permesso di soggiorno." },
+      "healthcareEnrollment": { "title": "Iscriviti al servizio sanitario", "detail": "Registrati a SSN/ASL se idoneo." },
+      "openBankAccount": { "title": "Apri un conto bancario italiano", "detail": "Porta documento, codice fiscale e prova di residenza." }
+    }
+  },
+  "appointments": {
+    "title": "Appuntamenti",
+    "add": "Aggiungi appuntamento",
+    "exportAll": "Esporta tutto in ICS",
+    "exportOne": "Esporta ICS",
+    "none": "Nessuno",
+    "maps": "Mappa",
+    "website": "Sito web",
+    "phone": "Telefono",
+    "reminders": "Promemoria",
+    "fields": {
+      "title": "Titolo",
+      "office": "Ufficio",
+      "address": "Indirizzo",
+      "mapsLink": "Link mappa",
+      "phone": "Telefono",
+      "website": "Sito web",
+      "reminders": "Offset promemoria (minuti, separati da virgola)"
+    }
+  },
+  "documents": {
+    "title": "Archivio documenti",
+    "add": "Aggiungi documento",
+    "number": "Numero",
+    "issueDate": "Data rilascio",
+    "expiryDate": "Data scadenza",
+    "notes": "Note",
+    "expired": "Scaduto",
+    "expiringSoon": "Scade tra {days} giorni",
+    "valid": "Valido per altri {days} giorni",
+    "expiryUnknown": "Data di scadenza sconosciuta",
+    "dashboard": {
+      "total": "Documenti totali",
+      "expired": "Scaduti",
+      "expiring7": "Scadenza entro 7 giorni",
+      "expiring30": "Scadenza entro 30 giorni"
+    },
+    "fields": {
+      "title": "Titolo documento",
+      "category": "Categoria",
+      "number": "Numero documento",
+      "issueDate": "Data rilascio",
+      "expiryDate": "Data scadenza",
+      "notes": "Note"
+    }
+  },
+  "nextActions": {
+    "title": "Prossime 3 azioni",
+    "allClear": "Tutto a posto: nessuna azione urgente al momento.",
+    "rules": {
+      "expiredDoc": "Rinnova documento scaduto: {doc}",
+      "expiringDoc": "Prepara rinnovo per {doc} (scade tra {days} giorni)",
+      "noAppointments": "Prenota il prossimo appuntamento necessario.",
+      "addReminder": "Aggiungi promemoria per appuntamento imminente: {title}",
+      "pendingTask": "Completa attività checklist: {task}"
+    }
+  }
+}

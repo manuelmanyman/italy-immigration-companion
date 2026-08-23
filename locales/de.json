@@ -1,0 +1,78 @@
+{
+  "app": {
+    "title": "Italien Einwanderungsbegleiter",
+    "language": "Sprache",
+    "install": "Installieren",
+    "disclaimer": "Nur zu Informationszwecken. Keine Rechtsberatung."
+  },
+  "common": {
+    "delete": "Löschen"
+  },
+  "checklist": {
+    "title": "Einwanderungs-Checkliste",
+    "tasks": {
+      "registerAddress": { "title": "Wohnsitz anmelden (Anagrafe)", "detail": "Reiche die Wohnsitzerklärung bei der Gemeinde ein." },
+      "applyTaxCode": { "title": "Codice fiscale beantragen", "detail": "Beantrage die italienische Steuernummer bei der Agenzia delle Entrate." },
+      "bookResidencePermit": { "title": "Termin für Aufenthaltstitel buchen", "detail": "Buche und bereite den Antrag für den Aufenthaltstitel vor." },
+      "healthcareEnrollment": { "title": "Im Gesundheitssystem anmelden", "detail": "Bei Anspruch beim SSN/ASL registrieren." },
+      "openBankAccount": { "title": "Italienisches Bankkonto eröffnen", "detail": "Ausweis, Steuernummer und Wohnsitznachweis mitbringen." }
+    }
+  },
+  "appointments": {
+    "title": "Termine",
+    "add": "Termin hinzufügen",
+    "exportAll": "Alle als ICS exportieren",
+    "exportOne": "ICS exportieren",
+    "none": "Keine",
+    "maps": "Karte",
+    "website": "Webseite",
+    "phone": "Telefon",
+    "reminders": "Erinnerungen",
+    "fields": {
+      "title": "Titel",
+      "office": "Amt",
+      "address": "Adresse",
+      "mapsLink": "Kartenlink",
+      "phone": "Telefon",
+      "website": "Webseite",
+      "reminders": "Erinnerungsabstände (Minuten, kommagetrennt)"
+    }
+  },
+  "documents": {
+    "title": "Dokumentenablage",
+    "add": "Dokument hinzufügen",
+    "number": "Nummer",
+    "issueDate": "Ausstellungsdatum",
+    "expiryDate": "Ablaufdatum",
+    "notes": "Notizen",
+    "expired": "Abgelaufen",
+    "expiringSoon": "Läuft in {days} Tagen ab",
+    "valid": "Noch {days} Tage gültig",
+    "expiryUnknown": "Ablaufdatum unbekannt",
+    "dashboard": {
+      "total": "Dokumente gesamt",
+      "expired": "Abgelaufen",
+      "expiring7": "Ablauf in 7 Tagen",
+      "expiring30": "Ablauf in 30 Tagen"
+    },
+    "fields": {
+      "title": "Dokumenttitel",
+      "category": "Kategorie",
+      "number": "Dokumentnummer",
+      "issueDate": "Ausstellungsdatum",
+      "expiryDate": "Ablaufdatum",
+      "notes": "Notizen"
+    }
+  },
+  "nextActions": {
+    "title": "Nächste 3 Aktionen",
+    "allClear": "Alles gut — aktuell keine dringenden Aktionen.",
+    "rules": {
+      "expiredDoc": "Abgelaufenes Dokument erneuern: {doc}",
+      "expiringDoc": "Verlängerung für {doc} vorbereiten (läuft in {days} Tagen ab)",
+      "noAppointments": "Nächsten notwendigen Termin buchen.",
+      "addReminder": "Erinnerungen für bevorstehenden Termin hinzufügen: {title}",
+      "pendingTask": "Checklistenpunkt erledigen: {task}"
+    }
+  }
+}
