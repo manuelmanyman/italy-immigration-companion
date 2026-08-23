@@ -32,59 +32,62 @@
         <ul id="next-pending-list" class="stack"></ul>
         <h3 data-i18n="dashboard.alerts">Reminders</h3>
         <ul id="reminder-alerts" class="stack"></ul>
+        <h3 data-i18n="links.title">Useful links & offices</h3>
+        <ul id="useful-links-list" class="stack"></ul>
       </section>
 
       <section id="tasks" class="panel">
-        <h2 data-i18n="tasks.title">Tasks</h2>
+        <h2 data-i18n="tasks.title">Italy Registration Checklist</h2>
         <div id="category-list" class="stack"></div>
       </section>
 
       <section id="calendar" class="panel">
-        <h2 data-i18n="calendar.title">Calendar & timeline</h2>
-        <form id="appointment-form" class="form-grid">
-          <input name="title" required data-i18n-placeholder="appointments.fields.title" placeholder="Title" />
-          <input name="datetime" required type="datetime-local" />
-          <input name="office" required data-i18n-placeholder="appointments.fields.office" placeholder="Office" />
-          <input name="address" required data-i18n-placeholder="appointments.fields.address" placeholder="Address" />
-          <input name="mapsLink" type="url" data-i18n-placeholder="appointments.fields.mapsLink" placeholder="Maps link" />
-          <input name="phone" data-i18n-placeholder="appointments.fields.phone" placeholder="Phone" />
-          <input name="website" type="url" data-i18n-placeholder="appointments.fields.website" placeholder="Website" />
-          <input name="reminderOffsets" data-i18n-placeholder="appointments.fields.reminders" placeholder="7d,1d,2h" />
-          <button type="submit" data-i18n="appointments.add">Add appointment</button>
-          <button id="export-all-events" type="button" data-i18n="calendar.exportAll">Export all events ICS</button>
-        </form>
+        <h2 data-i18n="calendar.title">Timeline</h2>
+        <button id="export-all-events" type="button" data-i18n="calendar.exportAll">Export all events ICS</button>
         <ul id="timeline-list" class="stack"></ul>
       </section>
 
       <section id="documents" class="panel">
-        <h2 data-i18n="documents.title">Document vault</h2>
+        <h2 data-i18n="documents.title">Document Center</h2>
         <div id="document-status" class="muted"></div>
-        <div id="document-dashboard" class="dashboard"></div>
-        <label>
-          <span data-i18n="documents.filter">Filter by task</span>
-          <select id="documents-filter" aria-label="Filter documents"></select>
-        </label>
-        <form id="document-form" class="form-grid">
-          <input name="name" required data-i18n-placeholder="documents.fields.name" placeholder="Document name" />
-          <input name="category" required data-i18n-placeholder="documents.fields.category" placeholder="Category" />
-          <input name="issueDate" type="date" />
-          <input name="expiryDate" type="date" />
-          <select name="linkedTaskId" id="linked-task-select" aria-label="Linked task"></select>
-          <input name="uploadFile" type="file" accept="image/*,.pdf" />
-          <input name="captureFile" type="file" accept="image/*" capture="environment" />
-          <button type="submit" data-i18n="documents.add">Add document</button>
-        </form>
+        <div class="form-grid compact">
+          <label>
+            <span data-i18n="documents.filterSection">Filter by section</span>
+            <select id="documents-section-filter"></select>
+          </label>
+          <label>
+            <span data-i18n="documents.filterTask">Filter by task</span>
+            <select id="documents-task-filter"></select>
+          </label>
+          <label>
+            <span data-i18n="documents.filterType">Filter by type</span>
+            <select id="documents-type-filter"></select>
+          </label>
+        </div>
+        <p id="documents-missing" class="muted"></p>
         <ul id="documents-list" class="stack"></ul>
       </section>
 
       <section id="learning" class="panel">
-        <h2 data-i18n="learning.title">Learning</h2>
-        <form id="learning-form" class="form-grid">
-          <input name="completedLessons" type="number" min="0" step="1" />
-          <input name="totalLessons" type="number" min="1" step="1" />
-          <button type="submit" data-i18n="learning.save">Save learning progress</button>
-        </form>
+        <h2 data-i18n="learning.title">B2 Mock Test</h2>
+        <div class="form-grid compact">
+          <label>
+            <span data-i18n="learning.modeLabel">Test mode</span>
+            <select id="learning-mode">
+              <option value="full" data-i18n="learning.modes.full">Full mock test</option>
+              <option value="reading" data-i18n="learning.modes.reading">Reading</option>
+              <option value="grammar" data-i18n="learning.modes.grammar">Grammar / Use of language</option>
+              <option value="listening" data-i18n="learning.modes.listening">Listening (placeholder)</option>
+            </select>
+          </label>
+          <button type="button" id="learning-start" data-i18n="learning.start">Start test</button>
+          <button type="button" id="learning-submit" data-i18n="learning.submit" hidden>Submit test</button>
+        </div>
+        <p id="learning-timer" class="muted"></p>
         <div id="learning-summary" class="muted"></div>
+        <div id="learning-test-area"></div>
+        <h3 data-i18n="learning.historyTitle">Score history</h3>
+        <ul id="learning-history" class="stack"></ul>
       </section>
 
       <section id="settings" class="panel">
@@ -107,10 +110,10 @@
 
     <nav class="bottom-nav" aria-label="Main sections">
       <button data-target="dashboard" data-i18n="nav.dashboard">Dashboard</button>
-      <button data-target="tasks" data-i18n="nav.tasks">Tasks</button>
-      <button data-target="calendar" data-i18n="nav.calendar">Calendar</button>
+      <button data-target="tasks" data-i18n="nav.tasks">Checklist</button>
+      <button data-target="calendar" data-i18n="nav.calendar">Timeline</button>
       <button data-target="documents" data-i18n="nav.documents">Documents</button>
-      <button data-target="learning" data-i18n="nav.learning">Learning</button>
+      <button data-target="learning" data-i18n="nav.learning">B2</button>
       <button data-target="settings" data-i18n="nav.settings">Settings</button>
     </nav>
 

@@ -1,16 +1,16 @@
 {
   "app": {
-    "title": "Compagno Immigrazione Italia",
+    "title": "Italy Immigration Companion",
     "language": "Lingua",
     "install": "Installa",
-    "disclaimer": "Solo informazioni generali. Non costituisce consulenza legale."
+    "disclaimer": "This app is for informational and organizational purposes only. It is not legal advice."
   },
   "nav": {
     "dashboard": "Dashboard",
-    "tasks": "Attività",
-    "calendar": "Calendario",
+    "tasks": "Checklist",
+    "calendar": "Timeline",
     "documents": "Documenti",
-    "learning": "Studio",
+    "learning": "Test B2",
     "settings": "Impostazioni"
   },
   "common": {
@@ -21,97 +21,371 @@
   "dashboard": {
     "title": "Dashboard",
     "overallProgress": "Progresso totale",
-    "nextFive": "Prossimi 5 elementi in sospeso",
+    "nextFive": "Prossime 5 attività",
     "alerts": "Promemoria",
     "noAlerts": "Nessun promemoria attivo.",
-    "reminderTitle": "Promemoria immigrazione"
+    "reminderTitle": "Promemoria immigrazione",
+    "of": "di",
+    "stepsCompleted": "passi completati"
+  },
+  "links": {
+    "title": "Link utili e uffici",
+    "open": "Apri sito ufficiale",
+    "items": {
+      "agenziaEntrate": {
+        "title": "Agenzia delle Entrate",
+        "subtitle": "Codice Fiscale",
+        "description": "Online booking for tax ID and Identificativi fiscali services."
+      },
+      "comuneEppan": {
+        "title": "Comune di Appiano (Eppan)",
+        "subtitle": "Residenza & Marriage",
+        "description": "Municipality for residency and marriage registration."
+      },
+      "questuraBolzano": {
+        "title": "Questura di Bolzano",
+        "subtitle": "Permesso di Soggiorno",
+        "description": "Immigration office for residence permits and appointments."
+      },
+      "michiganGreatSeal": {
+        "title": "Michigan Office of the Great Seal",
+        "subtitle": "Apostille",
+        "description": "Apostille authority for Michigan documents."
+      },
+      "michiganVitalRecords": {
+        "title": "Vital Records (Michigan)",
+        "subtitle": "Marriage Certificate",
+        "description": "Order or track official Michigan marriage certificates."
+      }
+    }
   },
   "tasks": {
-    "title": "Flusso attività",
+    "title": "Italy Registration Checklist",
     "openCategory": "Apri",
     "closeCategory": "Chiudi",
-    "targetDate": "Data obiettivo",
+    "targetDate": "Data scadenza",
     "notes": "Note",
     "reminders": "Offset promemoria",
     "noDate": "Nessuna data",
-    "categories": {
-      "changeAddress": { "title": "Cambio residenza legale" },
-      "permesso": { "title": "Permesso di soggiorno" },
-      "marriage": { "title": "Trascrizione matrimonio" }
+    "dueSoon": "In scadenza",
+    "overdue": "Scaduto",
+    "dueIn": "Scade tra {days} giorni",
+    "done": "Completato",
+    "noReminders": "Nessuno",
+    "taskActions": "Azioni attività",
+    "markCompleted": "Segna attività completata",
+    "actions": {
+      "checkDone": "Segna fatto",
+      "reminder": "Data/promemoria",
+      "documents": "Aggiungi/Vedi documenti",
+      "notes": "Note"
     },
-    "subtasks": {
-      "addressDocs": { "title": "Prepara documenti residenza", "detail": "Raccogli contratto affitto, documento e dichiarazioni utili." },
-      "addressAppointment": { "title": "Appuntamento Anagrafe", "detail": "Prenota e partecipa all'appuntamento comunale per residenza." },
-      "addressConfirmation": { "title": "Conferma pratica residenza", "detail": "Inserisci data prevista per controllo o lettera di conferma." },
-      "permessoKit": { "title": "Prepara kit permesso", "detail": "Prepara kit postale, fotocopie, foto e bollettini." },
-      "permessoPost": { "title": "Invia kit in posta", "detail": "Invia busta e salva ricevuta/tracking." },
-      "permessoQuestura": { "title": "Appuntamento Questura impronte", "detail": "Salva data appuntamento e documenti richiesti per biometria." },
-      "marriageCertificates": { "title": "Raccogli certificati matrimonio", "detail": "Prepara traduzioni legalizzate e stato civile." },
-      "marriageAppointment": { "title": "Appuntamento trascrizione al Comune", "detail": "Imposta data per registrazione matrimonio al Comune." },
-      "marriageTranscript": { "title": "Conferma trascrizione completata", "detail": "Controlla data completamento e ritira certificati aggiornati." }
-    }
-  },
-  "appointments": {
-    "add": "Aggiungi appuntamento",
-    "none": "Nessuno",
-    "fields": {
-      "title": "Titolo",
-      "office": "Ufficio",
-      "address": "Indirizzo",
-      "mapsLink": "Link mappa",
-      "phone": "Telefono",
-      "website": "Sito web",
-      "reminders": "Offset promemoria (7d,1d,2h)"
+    "sections": {
+      "codiceFiscale": {
+        "title": "1 — Codice Fiscale",
+        "subtitle": "First key ID"
+      },
+      "yourResidency": {
+        "title": "2 — Your Residency (Residenza)",
+        "subtitle": "Base for everything"
+      },
+      "herResidency": {
+        "title": "3 — Her Residency (Residenza)",
+        "subtitle": "Her legal seat"
+      },
+      "marriageRegistration": {
+        "title": "4 — Marriage Registration (Trascrizione Matrimonio)",
+        "subtitle": "US → Italy"
+      },
+      "permesso": {
+        "title": "5 — Permesso di Soggiorno",
+        "subtitle": "Stay beyond 90 days"
+      },
+      "afterPermesso": {
+        "title": "6 — After Permesso",
+        "subtitle": "Life setup"
+      },
+      "apostilleLogistics": {
+        "title": "7 — Apostille Logistics (Michigan)",
+        "subtitle": "US side"
+      },
+      "legalStay": {
+        "title": "8 — Legal Stay",
+        "subtitle": "Status"
+      }
+    },
+    "items": {
+      "cfAppointmentBooked": {
+        "title": "Appointment booked at Agenzia delle Entrate",
+        "detail": "Choose the right service for Identificativi fiscali / Codice Fiscale."
+      },
+      "cfAa48Filled": {
+        "title": "AA4/8 form filled out",
+        "detail": "Completed with your wife's data and your address in Eppan."
+      },
+      "cfIssued": {
+        "title": "Codice Fiscale issued",
+        "detail": "She receives her tax ID number (printed or PDF)."
+      },
+      "yourResidencyRegistered": {
+        "title": "You registered your address",
+        "detail": "Comune Eppan has your residency request in the system."
+      },
+      "yourPoliceVisitCompleted": {
+        "title": "Police visit completed",
+        "detail": "Local police confirm you live at the new apartment."
+      },
+      "yourResidencyConfirmed": {
+        "title": "Your residency officially confirmed",
+        "detail": "You appear as resident in Eppan's registry."
+      },
+      "herCfObtained": {
+        "title": "Her Codice Fiscale obtained",
+        "detail": "Needed before the Comune can register her."
+      },
+      "herResidencySubmitted": {
+        "title": "Her residency request submitted at Comune Eppan",
+        "detail": "Same address as yours, with rental contract."
+      },
+      "herPoliceVisitCompleted": {
+        "title": "Police visit for her completed",
+        "detail": "Police confirm she lives with you at the same address."
+      },
+      "herResidencyConfirmed": {
+        "title": "Her residency officially confirmed",
+        "detail": "She appears as resident in Eppan's registry."
+      },
+      "marriageMichiganCertificateReceived": {
+        "title": "Original Michigan Marriage Certificate received",
+        "detail": "Vital Records document arrives from the US."
+      },
+      "marriageTranslationReady": {
+        "title": "Italian notarized translation ready",
+        "detail": "You already have this translation with notary stamp."
+      },
+      "marriageApostilleObtained": {
+        "title": "Apostille obtained in Michigan",
+        "detail": "Issued by Michigan Secretary of State – Office of the Great Seal."
+      },
+      "marriageSubmittedComune": {
+        "title": "Marriage certificate + translation submitted to Comune Eppan",
+        "detail": "Stato Civile starts the registration process."
+      },
+      "marriageApostilleDeliveredComune": {
+        "title": "Apostille delivered to Comune Eppan",
+        "detail": "They finalize the registration once Apostille is added."
+      },
+      "marriageRegisteredItaly": {
+        "title": "Marriage officially registered in Italy",
+        "detail": "Your marriage is now in the Italian civil registry."
+      },
+      "marriageExtractIssued": {
+        "title": "Italian marriage extract (Estratto dell'atto di matrimonio) issued",
+        "detail": "You can request this document for future procedures."
+      },
+      "permessoApplicationSubmitted": {
+        "title": "Application submitted at Questura Bolzano",
+        "detail": "Immigration office accepts her application."
+      },
+      "permessoFingerprintsCompleted": {
+        "title": "Fingerprint appointment completed",
+        "detail": "She attends the scheduled biometrics appointment."
+      },
+      "permessoApostilleDeliveredQuestura": {
+        "title": "Apostille delivered to Questura",
+        "detail": "They validate the marriage with the Apostille."
+      },
+      "permessoApproved": {
+        "title": "Permesso approved",
+        "detail": "Questura grants her residence permit."
+      },
+      "permessoCardReceived": {
+        "title": "Permesso card received",
+        "detail": "Physical card collected or delivered."
+      },
+      "afterTesseraIssued": {
+        "title": "Tessera Sanitaria (health card) issued",
+        "detail": "She is registered with the Italian health system."
+      },
+      "afterFamilyDoctorAssigned": {
+        "title": "Family doctor assigned",
+        "detail": "She chooses a medico di base in your area."
+      },
+      "afterFamilyStatusUpdated": {
+        "title": "Family status updated at Comune / INPS",
+        "detail": "Your family composition is officially recorded."
+      },
+      "afterTaxBenefitsUpdated": {
+        "title": "Tax benefits updated",
+        "detail": "You can use family status for tax and social benefits."
+      },
+      "logisticsCertificateArrivesColorado": {
+        "title": "Marriage certificate arrives in Colorado",
+        "detail": "Vital Records document reaches your friends."
+      },
+      "logisticsFriendsSendLansing": {
+        "title": "Friends send it to Lansing",
+        "detail": "They forward it to your family in Michigan."
+      },
+      "logisticsFamilyBringsGreatSeal": {
+        "title": "Family brings it to Office of the Great Seal",
+        "detail": "In-person visit for same-day Apostille."
+      },
+      "logisticsApostilleIssuedSameDay": {
+        "title": "Apostille issued (same day)",
+        "detail": "Michigan Secretary of State attaches Apostille."
+      },
+      "logisticsApostilleShippedItaly": {
+        "title": "Apostille shipped to Italy (FedEx/Express)",
+        "detail": "Tracked shipment to your address in Eppan."
+      },
+      "logisticsApostilleReceivedItaly": {
+        "title": "Apostille received in Italy",
+        "detail": "You have the full set: original + Apostille + translation."
+      },
+      "legalEntry90Day": {
+        "title": "She entered Italy legally (90-day visa-free)",
+        "detail": "US citizen entry under Schengen rules."
+      },
+      "legalPermessoApplicationExtendsStay": {
+        "title": "Permesso application submitted (extends legal stay)",
+        "detail": "Once filed, she can stay while it's processed."
+      }
     }
   },
   "calendar": {
-    "title": "Calendario e timeline",
-    "empty": "Nessun appuntamento o sotto-attività con data.",
-    "call": "Chiama",
-    "map": "Mappa",
-    "website": "Sito",
+    "title": "Timeline scadenze",
+    "empty": "Nessuna data attività.",
+    "reminders": "Promemoria",
     "exportOne": "Esporta ICS",
-    "exportAll": "Esporta tutti gli eventi ICS",
-    "reminders": "Promemoria"
+    "exportAll": "Esporta tutti i promemoria attività (ICS)",
+    "clearDate": "Cancella data"
   },
   "documents": {
-    "title": "Archivio documenti",
-    "add": "Aggiungi documento",
-    "issueDate": "Data rilascio",
-    "expiryDate": "Data scadenza",
+    "title": "Centro documenti sezione",
+    "shortLabel": "doc",
+    "addForTask": "Salva documento per questa attività",
     "linkedTask": "Attività collegata",
+    "typeLabel": "Tipo",
+    "typeOther": "altro",
     "file": "File",
-    "openFile": "Apri file",
     "noFile": "Nessun file",
+    "preview": "Anteprima",
+    "download": "Scarica",
+    "share": "Condividi",
+    "print": "Stampa",
     "empty": "Nessun documento in questa vista.",
-    "filter": "Filtra per attività",
-    "filterAll": "Tutte le attività",
+    "emptyTask": "Nessun documento collegato a questa attività.",
     "unlinked": "Non collegato",
-    "expired": "Scaduto",
-    "expiringSoon": "Scade tra {days} giorni",
-    "valid": "Valido per altri {days} giorni",
-    "expiryUnknown": "Data scadenza sconosciuta",
-    "messages": {
-      "metadataOnly": "Salvati solo i metadati.",
-      "localOnly": "Supabase non disponibile. Metadati salvati in locale.",
-      "uploaded": "Documento caricato su Supabase Storage.",
-      "uploadFailed": "Upload fallito. Metadati salvati in locale."
-    },
-    "dashboard": {
-      "total": "Documenti totali",
-      "expired": "Scaduti",
-      "expiring7": "Scadenza entro 7 giorni",
-      "expiring30": "Scadenza entro 30 giorni"
-    },
+    "filterSection": "Filtra per sezione",
+    "filterTask": "Filtra per attività",
+    "filterType": "Filtra per tipo documento",
+    "filterAllSections": "Tutte le sezioni",
+    "filterAllTasks": "Tutte le attività",
+    "filterAllTypes": "Tutti i tipi",
+    "missingLabel": "Documenti mancanti",
+    "noneMissing": "Nessun documento richiesto mancante.",
+    "sectionCenterTitle": "Documenti sezione",
+    "viewAllSectionDocuments": "Vedi tutti i documenti della sezione",
     "fields": {
-      "name": "Nome documento",
-      "category": "Categoria"
+      "name": "Nome documento"
+    },
+    "messages": {
+      "metadataOnly": "Metadati documento salvati.",
+      "localOnly": "Supabase non disponibile. File salvato localmente nel browser.",
+      "uploaded": "Documento caricato su Supabase.",
+      "uploadFailed": "Upload fallito. File salvato localmente nel browser."
+    },
+    "types": {
+      "appointmentConfirmation": "Appointment confirmation",
+      "aa48Form": "AA4/8 form",
+      "codiceFiscalePdf": "Codice Fiscale PDF",
+      "residencyRequest": "Residency request",
+      "policeVisitNote": "Police visit note",
+      "residencyCertificate": "Residency certificate",
+      "rentalContract": "Rental contract",
+      "usMarriageCertificate": "US marriage certificate",
+      "italianTranslationNotarized": "Italian notarized translation",
+      "apostille": "Apostille",
+      "submissionReceipt": "Submission receipt",
+      "apostilleDeliveryProof": "Apostille delivery proof",
+      "registrationConfirmation": "Registration confirmation",
+      "estrattoMatrimonio": "Estratto di matrimonio",
+      "permessoReceipt": "Permesso receipt",
+      "fingerprintAppointmentProof": "Fingerprint appointment proof",
+      "permessoApproval": "Permesso approval",
+      "permessoCard": "Permesso card",
+      "tesseraSanitaria": "Tessera sanitaria",
+      "doctorAssignmentProof": "Doctor assignment proof",
+      "familyStatusUpdate": "Family status update",
+      "taxBenefitUpdate": "Tax benefit update",
+      "shippingTracking": "Shipping tracking",
+      "officeReceipt": "Office receipt",
+      "deliveryProof": "Delivery proof",
+      "passportStamp": "Passport entry stamp"
     }
   },
   "learning": {
-    "title": "Progresso studio",
-    "save": "Salva progresso studio",
-    "progress": "Lezioni"
+    "title": "Simulazione B2",
+    "modeLabel": "Modalità test",
+    "start": "Avvia test",
+    "submit": "Invia test",
+    "timeLeft": "Tempo rimanente",
+    "historyTitle": "Storico punteggi",
+    "noHistory": "Nessun test completato.",
+    "ready": "Pronto per una simulazione B2.",
+    "startPrompt": "Scegli una modalità e avvia un test a tempo.",
+    "activeMode": "Modalità attiva",
+    "modes": {
+      "full": "Simulazione completa",
+      "reading": "Comprensione scritta",
+      "grammar": "Grammatica / Uso della lingua",
+      "listening": "Ascolto (placeholder)"
+    },
+    "sections": {
+      "reading": "Comprensione scritta",
+      "grammar": "Grammatica / Uso della lingua",
+      "listening": "Ascolto (placeholder audio)"
+    },
+    "questions": {
+      "reading1": {
+        "prompt": "Reading: Why did Luca postpone his appointment at the Comune?",
+        "a": "He forgot his passport at home.",
+        "b": "He was waiting for the apostille document.",
+        "c": "The office was closed for renovation."
+      },
+      "reading2": {
+        "prompt": "Reading: Which document is explicitly required before filing residency?",
+        "a": "Italian driving license",
+        "b": "Bank account statement",
+        "c": "Codice Fiscale"
+      },
+      "grammar1": {
+        "prompt": "Grammar: Choose the correct option — 'If we ___ the receipt, Questura cannot verify submission.'",
+        "a": "lose",
+        "b": "lost",
+        "c": "will lose"
+      },
+      "grammar2": {
+        "prompt": "Grammar: Complete the sentence — 'She has lived in Italy ___ May.'",
+        "a": "since",
+        "b": "for",
+        "c": "during"
+      },
+      "listening1": {
+        "prompt": "Listening placeholder: The officer asks you to return in two days with ___",
+        "a": "a rental contract copy",
+        "b": "a train ticket",
+        "c": "passport photos"
+      },
+      "listening2": {
+        "prompt": "Listening placeholder: Which office handles apostille certification?",
+        "a": "Office of the Great Seal",
+        "b": "Questura immigration desk",
+        "c": "Agenzia Entrate"
+      }
+    },
+    "alreadyRunning": "Un test è già in corso. Invia il test o attendi la scadenza."
   },
   "settings": {
     "title": "Impostazioni e sincronizzazione",
@@ -125,21 +399,21 @@
     "enableNotifications": "Abilita notifiche",
     "exportBackup": "Esporta backup JSON",
     "messages": {
-      "supabaseMissing": "Env Supabase non configurato. Modalità locale attiva.",
+      "supabaseMissing": "Config Supabase mancante. Modalità locale attiva.",
       "supabaseReady": "Supabase configurato. Accedi per sincronizzare.",
-      "supabaseLoadError": "Impossibile caricare client Supabase.",
+      "supabaseLoadError": "Impossibile caricare il client Supabase.",
       "signedIn": "Accesso effettuato.",
       "signedOut": "Disconnesso.",
-      "signUpCheckEmail": "Account creato. Controlla email per conferma.",
+      "signUpCheckEmail": "Account creato. Controlla la tua email per la conferma.",
       "authError": "Errore autenticazione",
       "syncNeedsAuth": "Accedi prima di sincronizzare.",
       "syncSuccess": "Sincronizzazione completata.",
       "syncError": "Sincronizzazione fallita",
       "notificationsGranted": "Notifiche abilitate.",
       "notificationsDenied": "Notifiche non concesse.",
-      "importConfirm": "Importare backup e unire con i dati correnti?",
+      "importConfirm": "Importare il backup e unire i dati correnti?",
       "importSuccess": "Backup importato con successo.",
-      "importError": "Import backup non riuscito.",
+      "importError": "Importazione backup fallita.",
       "importInvalidVersion": "Formato backup non supportato."
     }
   }
