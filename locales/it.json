@@ -3,12 +3,14 @@
     "title": "Italy Immigration Companion",
     "language": "Lingua",
     "install": "Installa",
+    "themeLight": "Attiva modalità chiara",
+    "themeDark": "Attiva modalità scura",
     "disclaimer": "This app is for informational and organizational purposes only. It is not legal advice."
   },
   "nav": {
     "dashboard": "Dashboard",
     "tasks": "Checklist",
-    "calendar": "Timeline",
+    "calendar": "Calendario",
     "documents": "Documenti",
     "learning": "Test B2",
     "settings": "Impostazioni"
@@ -76,8 +78,9 @@
     "markCompleted": "Segna attività completata",
     "actions": {
       "checkDone": "Segna fatto",
-      "reminder": "Data/promemoria",
+      "reminder": "Imposta promemoria/data",
       "documents": "Aggiungi/Vedi documenti",
+      "uploadDocument": "Carica documento",
       "notes": "Note"
     },
     "sections": {
@@ -254,7 +257,8 @@
     }
   },
   "calendar": {
-    "title": "Timeline scadenze",
+    "title": "Calendario promemoria",
+    "widgetTitle": "Prossimi promemoria",
     "empty": "Nessuna data attività.",
     "reminders": "Promemoria",
     "exportOne": "Esporta ICS",
@@ -289,6 +293,11 @@
     "viewAllSectionDocuments": "Vedi tutti i documenti della sezione",
     "fields": {
       "name": "Nome documento"
+    },
+    "uploadChoices": {
+      "label": "Origine caricamento",
+      "file": "Carica file",
+      "camera": "Scatta con fotocamera"
     },
     "messages": {
       "metadataOnly": "Metadati documento salvati.",
@@ -334,6 +343,9 @@
     "historyTitle": "Storico punteggi",
     "noHistory": "Nessun test completato.",
     "ready": "Pronto per una simulazione B2.",
+    "resultSummary": "Ultimo risultato",
+    "correct": "corrette",
+    "wrong": "sbagliate",
     "startPrompt": "Scegli una modalità e avvia un test a tempo.",
     "activeMode": "Modalità attiva",
     "modes": {
@@ -349,39 +361,39 @@
     },
     "questions": {
       "reading1": {
-        "prompt": "Reading: Why did Luca postpone his appointment at the Comune?",
-        "a": "He forgot his passport at home.",
-        "b": "He was waiting for the apostille document.",
-        "c": "The office was closed for renovation."
+        "prompt": "Lettura: Perché Luca ha rimandato il suo appuntamento al Comune?",
+        "a": "Ha dimenticato il passaporto a casa.",
+        "b": "Stava aspettando il documento con apostille.",
+        "c": "L'ufficio era chiuso per ristrutturazione."
       },
       "reading2": {
-        "prompt": "Reading: Which document is explicitly required before filing residency?",
-        "a": "Italian driving license",
-        "b": "Bank account statement",
+        "prompt": "Lettura: Quale documento è esplicitamente richiesto prima di presentare la residenza?",
+        "a": "Patente italiana",
+        "b": "Estratto conto bancario",
         "c": "Codice Fiscale"
       },
       "grammar1": {
-        "prompt": "Grammar: Choose the correct option — 'If we ___ the receipt, Questura cannot verify submission.'",
-        "a": "lose",
-        "b": "lost",
-        "c": "will lose"
+        "prompt": "Grammatica: Scegli l'opzione corretta — 'Se ___ la ricevuta, la Questura non può verificare la domanda.'",
+        "a": "perdiamo",
+        "b": "perdevamo",
+        "c": "perderemo"
       },
       "grammar2": {
-        "prompt": "Grammar: Complete the sentence — 'She has lived in Italy ___ May.'",
-        "a": "since",
-        "b": "for",
-        "c": "during"
+        "prompt": "Grammatica: Completa la frase — 'Vive in Italia ___ maggio.'",
+        "a": "da",
+        "b": "per",
+        "c": "durante"
       },
       "listening1": {
-        "prompt": "Listening placeholder: The officer asks you to return in two days with ___",
-        "a": "a rental contract copy",
-        "b": "a train ticket",
-        "c": "passport photos"
+        "prompt": "Ascolto (placeholder): L'ufficiale ti chiede di tornare tra due giorni con ___",
+        "a": "una copia del contratto di affitto",
+        "b": "un biglietto del treno",
+        "c": "fototessere del passaporto"
       },
       "listening2": {
-        "prompt": "Listening placeholder: Which office handles apostille certification?",
-        "a": "Office of the Great Seal",
-        "b": "Questura immigration desk",
+        "prompt": "Ascolto (placeholder): Quale ufficio gestisce la certificazione apostille?",
+        "a": "Ufficio del Gran Sigillo",
+        "b": "Sportello immigrazione della Questura",
         "c": "Agenzia Entrate"
       }
     },

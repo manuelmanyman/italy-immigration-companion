@@ -3,12 +3,14 @@
     "title": "Italy Immigration Companion",
     "language": "Language",
     "install": "Install",
+    "themeLight": "Switch to light mode",
+    "themeDark": "Switch to dark mode",
     "disclaimer": "This app is for informational and organizational purposes only. It is not legal advice."
   },
   "nav": {
     "dashboard": "Dashboard",
     "tasks": "Checklist",
-    "calendar": "Timeline",
+    "calendar": "Calendar",
     "documents": "Documents",
     "learning": "B2 Test",
     "settings": "Settings"
@@ -76,8 +78,9 @@
     "markCompleted": "Mark this task as completed",
     "actions": {
       "checkDone": "Check done",
-      "reminder": "Set date/reminder",
+      "reminder": "Set reminder/date",
       "documents": "Add/View documents",
+      "uploadDocument": "Upload document",
       "notes": "Notes"
     },
     "sections": {
@@ -135,7 +138,8 @@
     }
   },
   "calendar": {
-    "title": "Upcoming timeline",
+    "title": "Calendar reminders",
+    "widgetTitle": "Upcoming reminders",
     "empty": "No task dates yet.",
     "reminders": "Reminders",
     "exportOne": "Export ICS",
@@ -199,6 +203,11 @@
     "fields": {
       "name": "Document name"
     },
+    "uploadChoices": {
+      "label": "Upload source",
+      "file": "File upload",
+      "camera": "Camera capture"
+    },
     "messages": {
       "metadataOnly": "Document metadata saved.",
       "localOnly": "Supabase unavailable. File kept locally in browser state.",
@@ -215,6 +224,9 @@
     "historyTitle": "Score history",
     "noHistory": "No completed tests yet.",
     "ready": "Ready for a B2 simulation.",
+    "resultSummary": "Last result",
+    "correct": "correct",
+    "wrong": "wrong",
     "startPrompt": "Choose a mode and start a timed mock test.",
     "activeMode": "Active mode",
     "alreadyRunning": "A test is already running. Submit it or wait for timeout.",

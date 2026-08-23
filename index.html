@@ -42,33 +42,46 @@
           <option value="it">Italiano</option>
           <option value="de">Deutsch</option>
         </select>
+        <button id="theme-toggle" type="button" aria-label="Toggle theme">🌙</button>
         <button id="install-btn" type="button" hidden data-i18n="app.install">Install</button>
+        <div id="update-banner" class="update-banner" hidden>
+          <span data-i18n="updates.available">New version available.</span>
+          <button id="update-refresh-btn" type="button" data-i18n="updates.reload">Refresh</button>
+        </div>
       </div>
     </header>
-    <div id="update-banner" class="update-banner" hidden>
-      <span data-i18n="updates.available">New version available.</span>
-      <button id="update-refresh-btn" type="button" data-i18n="updates.reload">Refresh now</button>
-    </div>
 
     <main>
       <section id="dashboard" class="panel">
         <h2 data-i18n="dashboard.title">Dashboard</h2>
-        <div id="overall-progress" class="metric"></div>
         <h3 data-i18n="dashboard.nextFive">Next 5 pending items</h3>
         <ul id="next-pending-list" class="stack"></ul>
         <h3 data-i18n="dashboard.alerts">Reminders</h3>
         <ul id="reminder-alerts" class="stack"></ul>
-        <h3 data-i18n="links.title">Useful links & offices</h3>
-        <ul id="useful-links-list" class="stack"></ul>
       </section>
 
       <section id="tasks" class="panel">
         <h2 data-i18n="tasks.title">Italy Registration Checklist</h2>
-        <div id="category-list" class="stack"></div>
+        <div id="overall-progress" class="metric"></div>
+        <div class="checklist-layout">
+          <div class="checklist-main">
+            <div id="category-list" class="stack"></div>
+          </div>
+          <aside class="checklist-side">
+            <section class="side-card">
+              <h3 data-i18n="links.title">Useful links & offices</h3>
+              <ul id="useful-links-list" class="stack"></ul>
+            </section>
+            <section class="side-card">
+              <h3 data-i18n="calendar.widgetTitle">Upcoming reminders</h3>
+              <ul id="calendar-widget-list" class="stack compact-list"></ul>
+            </section>
+          </aside>
+        </div>
       </section>
 
       <section id="calendar" class="panel">
-        <h2 data-i18n="calendar.title">Timeline</h2>
+        <h2 data-i18n="calendar.title">Calendar reminders</h2>
         <button id="export-all-events" type="button" data-i18n="calendar.exportAll">Export all events ICS</button>
         <ul id="timeline-list" class="stack"></ul>
       </section>
@@ -142,7 +155,7 @@
     <nav class="bottom-nav" aria-label="Main sections">
       <button data-target="dashboard" data-i18n="nav.dashboard">Dashboard</button>
       <button data-target="tasks" data-i18n="nav.tasks">Checklist</button>
-      <button data-target="calendar" data-i18n="nav.calendar">Timeline</button>
+      <button data-target="calendar" data-i18n="nav.calendar">Calendar</button>
       <button data-target="documents" data-i18n="nav.documents">Documents</button>
       <button data-target="learning" data-i18n="nav.learning">B2</button>
       <button data-target="settings" data-i18n="nav.settings">Settings</button>
