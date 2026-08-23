@@ -38,10 +38,7 @@ const CATEGORY_DEFINITIONS = [
 
 const LEGACY_TASK_MIGRATION = {
   'register-address': 'sub-address-appointment',
-  'apply-tax-code': 'sub-address-docs',
-  'book-residence-permit': 'sub-permesso-post',
-  'healthcare-enrollment': 'sub-permesso-questura',
-  'open-bank-account': 'sub-marriage-certificates'
+  'book-residence-permit': 'sub-permesso-post'
 };
 
 let translations = {};
@@ -93,7 +90,7 @@ const notificationService = {
     inAppAlerts = inAppAlerts.slice(0, 8);
   },
   registerPushSubscription() {
-    return { status: 'pending_server_implementation' };
+    return null;
   }
 };
 
@@ -606,22 +603,63 @@ function renderTimeline() {
   events.forEach((event) => {
     const li = document.createElement('li');
     li.className = 'item';
-    li.innerHTML = `
-      <h3>${escapeHtml(event.title)}</h3>
-      <p>${new Date(event.datetime).toLocaleString()}</p>
-      <p>${escapeHtml(event.context)}</p>
-      <p>${t('calendar.reminders')}: ${formatReminderOffsets(event.reminderOffsets)}</p>
-      <div class="item-actions">
-        ${event.phone ? `<a href="tel:${escapeAttribute(event.phone)}">${t('calendar.call')}</a>` : ''}
-        ${event.mapsLink ? `<a href="${escapeAttribute(event.mapsLink)}" target="_blank" rel="noopener">${t('calendar.map')}</a>` : ''}
-        ${event.website ? `<a href="${escapeAttribute(event.website)}" target="_blank" rel="noopener">${t('calendar.website')}</a>` : ''}
-        <button type="button" data-export-event="${event.id}">${t('calendar.exportOne')}</button>
-        <button type="button" data-delete-event="${event.id}">${t('common.delete')}</button>
-      </div>
-    `;
+    const title = document.createElement('h3');
+    title.textContent = event.title;
+    li.appendChild(title);
 
-    li.querySelector('[data-export-event]')?.addEventListener('click', () => exportSingleEventIcs(event.id));
-    li.querySelector('[data-delete-event]')?.addEventListener('click', () => deleteEvent(event));
+    const date = document.createElement('p');
+    date.textContent = new Date(event.datetime).toLocaleString();
+    li.appendChild(date);
+
+    const context = document.createElement('p');
+    context.textContent = event.context;
+    li.appendChild(context);
+
+    const reminderText = document.createElement('p');
+    reminderText.textContent = `${t('calendar.reminders')}: ${formatReminderOffsets(event.reminderOffsets)}`;
+    li.appendChild(reminderText);
+
+    const actions = document.createElement('div');
+    actions.className = 'item-actions';
+
+    if (event.phone) {
+      const phone = document.createElement('a');
+      phone.href = `tel:${event.phone}`;
+      phone.textContent = t('calendar.call');
+      actions.appendChild(phone);
+    }
+
+    if (event.mapsLink) {
+      const map = document.createElement('a');
+      map.href = event.mapsLink;
+      map.target = '_blank';
+      map.rel = 'noopener';
+      map.textContent = t('calendar.map');
+      actions.appendChild(map);
+    }
+
+    if (event.website) {
+      const website = document.createElement('a');
+      website.href = event.website;
+      website.target = '_blank';
+      website.rel = 'noopener';
+      website.textContent = t('calendar.website');
+      actions.appendChild(website);
+    }
+
+    const exportBtn = document.createElement('button');
+    exportBtn.type = 'button';
+    exportBtn.textContent = t('calendar.exportOne');
+    exportBtn.addEventListener('click', () => exportSingleEventIcs(event.id));
+    actions.appendChild(exportBtn);
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.type = 'button';
+    deleteBtn.textContent = t('common.delete');
+    deleteBtn.addEventListener('click', () => deleteEvent(event));
+    actions.appendChild(deleteBtn);
+
+    li.appendChild(actions);
     timelineList.appendChild(li);
   });
 }
@@ -651,25 +689,54 @@ function renderDocuments() {
     const li = document.createElement('li');
     li.className = 'item';
 
-    li.innerHTML = `
-      <h3>${escapeHtml(documentItem.name)} (${escapeHtml(documentItem.category)})</h3>
-      <p>${t('documents.linkedTask')}: ${escapeHtml(linkedTitle)}</p>
-      <p>${t('documents.issueDate')}: ${escapeHtml(documentItem.issueDate || t('tasks.noDate'))}</p>
-      <p>${t('documents.expiryDate')}: ${escapeHtml(documentItem.expiryDate || t('tasks.noDate'))}</p>
-      <p>${t('documents.file')}: ${escapeHtml(documentItem.fileName || t('documents.noFile'))}</p>
-      <p class="${expiryInfo.isExpired || expiryInfo.daysLeft <= 30 ? 'danger' : ''}">${expiryInfo.message}</p>
-      <div class="item-actions">
-        ${documentItem.fileUrl ? `<a href="${escapeAttribute(documentItem.fileUrl)}" target="_blank" rel="noopener">${t('documents.openFile')}</a>` : ''}
-        <button type="button" data-delete-doc-id="${documentItem.id}">${t('common.delete')}</button>
-      </div>
-    `;
+    const title = document.createElement('h3');
+    title.textContent = `${documentItem.name} (${documentItem.category})`;
+    li.appendChild(title);
 
-    li.querySelector('[data-delete-doc-id]')?.addEventListener('click', () => {
+    const linkedTask = document.createElement('p');
+    linkedTask.textContent = `${t('documents.linkedTask')}: ${linkedTitle}`;
+    li.appendChild(linkedTask);
+
+    const issueDate = document.createElement('p');
+    issueDate.textContent = `${t('documents.issueDate')}: ${documentItem.issueDate || t('tasks.noDate')}`;
+    li.appendChild(issueDate);
+
+    const expiryDate = document.createElement('p');
+    expiryDate.textContent = `${t('documents.expiryDate')}: ${documentItem.expiryDate || t('tasks.noDate')}`;
+    li.appendChild(expiryDate);
+
+    const fileName = document.createElement('p');
+    fileName.textContent = `${t('documents.file')}: ${documentItem.fileName || t('documents.noFile')}`;
+    li.appendChild(fileName);
+
+    const expiryMessage = document.createElement('p');
+    expiryMessage.textContent = expiryInfo.message;
+    if (expiryInfo.isExpired || expiryInfo.daysLeft <= 30) expiryMessage.classList.add('danger');
+    li.appendChild(expiryMessage);
+
+    const actions = document.createElement('div');
+    actions.className = 'item-actions';
+
+    if (documentItem.fileUrl) {
+      const fileLink = document.createElement('a');
+      fileLink.href = documentItem.fileUrl;
+      fileLink.target = '_blank';
+      fileLink.rel = 'noopener';
+      fileLink.textContent = t('documents.openFile');
+      actions.appendChild(fileLink);
+    }
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.type = 'button';
+    deleteBtn.textContent = t('common.delete');
+    deleteBtn.addEventListener('click', () => {
       if (!confirm(t('common.confirmDelete'))) return;
       state.documents = state.documents.filter((item) => item.id !== documentItem.id);
       saveStateAndRender();
     });
+    actions.appendChild(deleteBtn);
 
+    li.appendChild(actions);
     documentsList.appendChild(li);
   });
 
@@ -757,17 +824,23 @@ function refreshBottomNavActiveState() {
 function checkDueReminders() {
   const now = Date.now();
   const events = getAllEvents();
+  const validReminderKeys = new Set();
 
   events.forEach((event) => {
     (event.reminderOffsets || []).forEach((offset) => {
       const triggerAt = new Date(event.datetime).getTime() - offset * 60 * 1000;
       const key = `${event.id}_${offset}_${event.datetime}`;
+      validReminderKeys.add(key);
       const fired = state.reminders.fired[key];
       if (!fired && triggerAt <= now) {
         state.reminders.fired[key] = nowIso();
         notificationService.notify(t('dashboard.reminderTitle'), `${event.title} — ${new Date(event.datetime).toLocaleString()}`);
       }
     });
+  });
+
+  Object.keys(state.reminders.fired).forEach((key) => {
+    if (!validReminderKeys.has(key)) delete state.reminders.fired[key];
   });
 
   saveState();
@@ -781,7 +854,8 @@ async function uploadDocumentFile(file, documentId) {
 
   try {
     const workspaceId = state.settings.workspaceId || 'default-workspace';
-    const path = `${workspaceId}/${documentId}-${file.name}`;
+    const safeName = safeStorageName(file.name);
+    const path = `${workspaceId}/${documentId}-${safeName}`;
     const result = await supabaseClient.storage.from('documents').upload(path, file, {
       upsert: true
     });
@@ -875,6 +949,10 @@ async function importBackup(event) {
   try {
     const content = await file.text();
     const parsed = JSON.parse(content);
+    if (!parsed || (parsed.version && parsed.version !== 2)) {
+      syncStatus.textContent = t('settings.messages.importInvalidVersion');
+      return;
+    }
     if (!confirm(t('settings.messages.importConfirm'))) return;
     applyImportedState(parsed, false);
     saveStateAndRender();
@@ -919,7 +997,7 @@ function getAllEvents() {
         id: subtask.id,
         source: 'subtask',
         title: t(subtask.titleKey),
-        datetime: `${itemState.targetDate}T09:00:00`,
+        datetime: toLocalDateAtNineAmWithOffset(itemState.targetDate),
         context: t(category.titleKey),
         phone: '',
         mapsLink: '',
@@ -1023,7 +1101,7 @@ function sanitizePayload(payload) {
 }
 
 function saveState() {
-  saveJSON(STORAGE_KEYS.state, state);
+  saveJSON(STORAGE_KEYS.state, getLocallyPersistedState(state));
 }
 
 function saveStateAndRender() {
@@ -1033,6 +1111,15 @@ function saveStateAndRender() {
 
 function serializeStateForSync() {
   return sanitizePayload(state);
+}
+
+function getLocallyPersistedState(sourceState) {
+  const payload = sanitizePayload(sourceState);
+  return {
+    ...payload,
+    appointments: [],
+    documents: []
+  };
 }
 
 function getSubtaskTitle(subtaskId) {
@@ -1123,6 +1210,16 @@ function nowIso() {
   return new Date().toISOString();
 }
 
+function toLocalDateAtNineAmWithOffset(dateOnly) {
+  const localDate = new Date(`${dateOnly}T09:00:00`);
+  const timezoneOffsetMinutes = -localDate.getTimezoneOffset();
+  const sign = timezoneOffsetMinutes >= 0 ? '+' : '-';
+  const abs = Math.abs(timezoneOffsetMinutes);
+  const hours = String(Math.floor(abs / 60)).padStart(2, '0');
+  const minutes = String(abs % 60).padStart(2, '0');
+  return `${dateOnly}T09:00:00${sign}${hours}:${minutes}`;
+}
+
 function parseDate(value) {
   if (!value) return 0;
   const timestamp = new Date(value).getTime();
@@ -1153,6 +1250,14 @@ function escapeIcs(value) {
 
 function safeFileName(text) {
   return String(text || 'event').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+}
+
+function safeStorageName(text) {
+  return String(text || 'file')
+    .replace(/[\\/]/g, '-')
+    .replace(/[^a-zA-Z0-9._-]/g, '-')
+    .replace(/-+/g, '-')
+    .slice(0, 120);
 }
 
 function normalizeHttpUrl(value) {

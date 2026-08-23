@@ -33,6 +33,7 @@ Task-centric, multilingual (EN/IT/DE) PWA for organizing immigration workflows i
 - Data handling:
   - Migration from legacy checklist state
   - JSON backup export/import
+  - Local persistence keeps workflow/reminder/settings metadata; appointments/documents remain session-only unless synced/exported
 
 ## Project Structure
 
@@ -47,7 +48,7 @@ Task-centric, multilingual (EN/IT/DE) PWA for organizing immigration workflows i
 Run from an HTTP server (needed for locales/service worker):
 
 ```bash
-cd /home/runner/work/italy-immigration-companion/italy-immigration-companion
+cd <project-directory>
 python3 -m http.server 8080
 ```
 

@@ -139,7 +139,8 @@
       "notificationsDenied": "Notifications not granted.",
       "importConfirm": "Import backup and merge with current data?",
       "importSuccess": "Backup imported successfully.",
-      "importError": "Failed to import backup."
+      "importError": "Failed to import backup.",
+      "importInvalidVersion": "Backup format is not supported."
     }
   }
 }

@@ -139,7 +139,8 @@
       "notificationsDenied": "Benachrichtigungen nicht erlaubt.",
       "importConfirm": "Backup importieren und mit aktuellen Daten zusammenführen?",
       "importSuccess": "Backup erfolgreich importiert.",
-      "importError": "Backup konnte nicht importiert werden."
+      "importError": "Backup konnte nicht importiert werden.",
+      "importInvalidVersion": "Backup-Format wird nicht unterstützt."
     }
   }
 }

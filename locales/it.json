@@ -139,7 +139,8 @@
       "notificationsDenied": "Notifiche non concesse.",
       "importConfirm": "Importare backup e unire con i dati correnti?",
       "importSuccess": "Backup importato con successo.",
-      "importError": "Import backup non riuscito."
+      "importError": "Import backup non riuscito.",
+      "importInvalidVersion": "Formato backup non supportato."
     }
   }
 }
