@@ -387,8 +387,22 @@
     },
     "alreadyRunning": "Un test è già in corso. Invia il test o attendi la scadenza."
   },
+  "updates": {
+    "available": "Nuova versione disponibile.",
+    "reload": "Aggiorna ora"
+  },
   "settings": {
     "title": "Impostazioni e sincronizzazione",
+    "aboutTitle": "Informazioni sull'app",
+    "appVersionLabel": "Versione app",
+    "buildTimestampLabel": "Build timestamp",
+    "serviceWorkerVersionLabel": "Versione service worker",
+    "serviceWorkerStatusLabel": "Stato service worker",
+    "serviceWorkerUnsupported": "Non supportato in questo browser",
+    "serviceWorkerUnavailable": "Non ancora attivo",
+    "serviceWorkerInstalling": "Aggiornamento in installazione",
+    "serviceWorkerWaiting": "Aggiornamento pronto — ricarica per applicarlo",
+    "serviceWorkerActive": "Attivo",
     "workspaceId": "ID workspace",
     "email": "Email",
     "password": "Password",

@@ -51,6 +51,20 @@ body {
   gap: 0.5rem;
 }
 
+.update-banner {
+  position: sticky;
+  top: 74px;
+  z-index: 19;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #ecfeff;
+  border-bottom: 1px solid #99f6e4;
+  color: #134e4a;
+}
+
 main {
   max-width: 980px;
   margin: 0 auto;
@@ -314,6 +328,12 @@ progress {
   color: var(--muted);
 }
 
+.about-card {
+  margin-top: 0.9rem;
+  border-top: 1px solid var(--border);
+  padding-top: 0.9rem;
+}
+
 .danger {
   color: var(--danger) !important;
   font-weight: 700;
@@ -331,6 +351,12 @@ footer {
 }
 
 @media (max-width: 760px) {
+  .update-banner {
+    top: 114px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .topbar-controls {
     width: 100%;
     flex-wrap: wrap;

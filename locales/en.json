@@ -268,8 +268,22 @@
       }
     }
   },
+  "updates": {
+    "available": "New version available.",
+    "reload": "Refresh now"
+  },
   "settings": {
     "title": "Settings & sync",
+    "aboutTitle": "About this app",
+    "appVersionLabel": "App version",
+    "buildTimestampLabel": "Build timestamp",
+    "serviceWorkerVersionLabel": "Service worker version",
+    "serviceWorkerStatusLabel": "Service worker status",
+    "serviceWorkerUnsupported": "Not supported in this browser",
+    "serviceWorkerUnavailable": "Not active yet",
+    "serviceWorkerInstalling": "Installing update",
+    "serviceWorkerWaiting": "Update ready — refresh to apply",
+    "serviceWorkerActive": "Active",
     "workspaceId": "Workspace ID",
     "email": "Email",
     "password": "Password",
