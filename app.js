@@ -1,8 +1,6 @@
 const STORAGE_KEYS = {
   language: 'iic_language',
-  checklist: 'iic_checklist_v1',
-  appointments: 'iic_appointments_v1',
-  documents: 'iic_documents_v1'
+  checklist: 'iic_checklist_v1'
 };
 
 const TASK_DEFINITIONS = [
@@ -15,8 +13,8 @@ const TASK_DEFINITIONS = [
 
 let translations = {};
 let checklistState = loadJSON(STORAGE_KEYS.checklist, {});
-let appointments = loadJSON(STORAGE_KEYS.appointments, []);
-let documents = loadJSON(STORAGE_KEYS.documents, []);
+let appointments = [];
+let documents = [];
 let deferredInstallPrompt;
 
 const languageSelect = document.getElementById('language-select');
@@ -50,15 +48,14 @@ async function init() {
       datetime: formData.get('datetime')?.toString() || '',
       office: formData.get('office')?.toString().trim() || '',
       address: formData.get('address')?.toString().trim() || '',
-      mapsLink: formData.get('mapsLink')?.toString().trim() || '',
+      mapsLink: normalizeHttpUrl(formData.get('mapsLink')?.toString().trim() || ''),
       phone: formData.get('phone')?.toString().trim() || '',
-      website: formData.get('website')?.toString().trim() || '',
+      website: normalizeHttpUrl(formData.get('website')?.toString().trim() || ''),
       reminderOffsets: parseReminderOffsets(formData.get('reminderOffsets'))
     };
 
     if (!item.title || !item.datetime || !item.office || !item.address) return;
     appointments.push(item);
-    saveJSON(STORAGE_KEYS.appointments, appointments);
     appointmentForm.reset();
     renderAll();
   });
@@ -80,7 +77,6 @@ async function init() {
 
     if (!item.title || !item.category || !item.expiryDate) return;
     documents.push(item);
-    saveJSON(STORAGE_KEYS.documents, documents);
     documentForm.reset();
     renderAll();
   });
@@ -168,6 +164,8 @@ function renderAppointments() {
   sorted.forEach((appointment) => {
     const li = document.createElement('li');
     li.className = 'item';
+    const websiteUrl = normalizeHttpUrl(appointment.website);
+    const mapsUrl = normalizeHttpUrl(appointment.mapsLink);
 
     const reminders = appointment.reminderOffsets.length
       ? appointment.reminderOffsets.map((m) => `${m}m`).join(', ')
@@ -179,8 +177,8 @@ function renderAppointments() {
       <p>${escapeHtml(appointment.office)} — ${escapeHtml(appointment.address)}</p>
       <p>${t('appointments.reminders')}: ${reminders}</p>
       <p>${appointment.phone ? `${t('appointments.phone')}: ${escapeHtml(appointment.phone)}` : ''}</p>
-      <p>${appointment.website ? `<a href="${escapeAttribute(appointment.website)}" target="_blank" rel="noopener">${t('appointments.website')}</a>` : ''}</p>
-      <p>${appointment.mapsLink ? `<a href="${escapeAttribute(appointment.mapsLink)}" target="_blank" rel="noopener">${t('appointments.maps')}</a>` : ''}</p>
+      <p>${websiteUrl ? `<a href="${escapeAttribute(websiteUrl)}" target="_blank" rel="noopener">${t('appointments.website')}</a>` : ''}</p>
+      <p>${mapsUrl ? `<a href="${escapeAttribute(mapsUrl)}" target="_blank" rel="noopener">${t('appointments.maps')}</a>` : ''}</p>
       <div>
         <button type="button" data-export-id="${appointment.id}">${t('appointments.exportOne')}</button>
         <button type="button" data-delete-id="${appointment.id}">${t('common.delete')}</button>
@@ -190,7 +188,6 @@ function renderAppointments() {
     li.querySelector('[data-export-id]').addEventListener('click', () => exportSingleAppointmentIcs(appointment.id));
     li.querySelector('[data-delete-id]').addEventListener('click', () => {
       appointments = appointments.filter((item) => item.id !== appointment.id);
-      saveJSON(STORAGE_KEYS.appointments, appointments);
       renderAll();
     });
 
@@ -218,7 +215,6 @@ function renderDocuments() {
 
     li.querySelector('[data-delete-doc-id]').addEventListener('click', () => {
       documents = documents.filter((item) => item.id !== documentItem.id);
-      saveJSON(STORAGE_KEYS.documents, documents);
       renderAll();
     });
 
@@ -254,12 +250,16 @@ function renderDocumentDashboard() {
 function renderNextActions() {
   const actions = [];
   const now = new Date();
+  let documentAlerts = 0;
+  const pendingTasks = TASK_DEFINITIONS.filter((task) => !checklistState[task.id]);
 
   documents.forEach((item) => {
     const expiry = getExpiryInfo(item.expiryDate);
     if (expiry.isExpired) {
+      documentAlerts += 1;
       actions.push({ priority: 1, text: t('nextActions.rules.expiredDoc').replace('{doc}', item.title) });
     } else if (expiry.daysLeft <= 30) {
+      documentAlerts += 1;
       actions.push({ priority: 2, text: t('nextActions.rules.expiringDoc').replace('{doc}', item.title).replace('{days}', String(expiry.daysLeft)) });
     }
   });
@@ -269,17 +269,17 @@ function renderNextActions() {
     .filter((item) => item.date >= now)
     .sort((a, b) => a.date - b.date);
 
-  if (upcomingAppointments.length === 0) {
+  if (upcomingAppointments.length === 0 && (pendingTasks.length > 0 || documentAlerts > 0)) {
     actions.push({ priority: 1, text: t('nextActions.rules.noAppointments') });
   } else {
     const soon = upcomingAppointments[0];
-    const days = Math.ceil((soon.date - now) / (1000 * 60 * 60 * 24));
-    if (days <= 7 && (!soon.reminderOffsets || soon.reminderOffsets.length === 0)) {
+    const days = soon ? Math.ceil((soon.date - now) / (1000 * 60 * 60 * 24)) : Number.POSITIVE_INFINITY;
+    if (soon && days <= 7 && (!soon.reminderOffsets || soon.reminderOffsets.length === 0)) {
       actions.push({ priority: 2, text: t('nextActions.rules.addReminder').replace('{title}', soon.title) });
     }
   }
 
-  TASK_DEFINITIONS.filter((task) => !checklistState[task.id])
+  pendingTasks
     .sort((a, b) => a.priority - b.priority)
     .slice(0, 3)
     .forEach((task) => {
@@ -386,6 +386,9 @@ function getExpiryInfo(expiryDate) {
   const today = new Date();
   const localMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
   const target = new Date(`${expiryDate}T00:00:00`);
+  if (Number.isNaN(target.getTime())) {
+    return { daysLeft: Number.POSITIVE_INFINITY, isExpired: false, message: t('documents.expiryUnknown') };
+  }
   const diffMs = target - localMidnight;
   const daysLeft = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
 
@@ -437,6 +440,17 @@ function escapeIcs(value) {
 
 function safeFileName(text) {
   return String(text || 'appointment').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+}
+
+function normalizeHttpUrl(value) {
+  if (!value) return '';
+
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:' ? parsed.toString() : '';
+  } catch {
+    return '';
+  }
 }
 
 function escapeHtml(value) {

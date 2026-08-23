@@ -60,8 +60,8 @@ All data is stored locally in browser `localStorage` only:
 
 - Language preference
 - Checklist completion state (keyed by stable task IDs)
-- Appointments
-- Document metadata
+
+Appointments and document vault entries are kept in runtime memory and are cleared when the browser tab/app is closed.
 
 ## Legal Disclaimer
 
