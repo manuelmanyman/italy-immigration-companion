@@ -5,29 +5,55 @@
     "install": "Install",
     "disclaimer": "Informational app only. This is not legal advice."
   },
-  "common": {
-    "delete": "Delete"
+  "nav": {
+    "dashboard": "Dashboard",
+    "tasks": "Tasks",
+    "calendar": "Calendar",
+    "documents": "Documents",
+    "learning": "Learning",
+    "settings": "Settings"
   },
-  "checklist": {
-    "title": "Immigration checklist",
-    "tasks": {
-      "registerAddress": { "title": "Register your address (Anagrafe)", "detail": "Submit local residence declaration at your municipality." },
-      "applyTaxCode": { "title": "Apply for codice fiscale", "detail": "Get your Italian tax code from Agenzia delle Entrate." },
-      "bookResidencePermit": { "title": "Book permesso di soggiorno appointment", "detail": "Reserve and prepare the residence permit application packet." },
-      "healthcareEnrollment": { "title": "Enroll in healthcare", "detail": "Register with SSN/ASL if you qualify." },
-      "openBankAccount": { "title": "Open an Italian bank account", "detail": "Bring ID, tax code, and proof of address." }
+  "common": {
+    "delete": "Delete",
+    "empty": "No items yet.",
+    "confirmDelete": "Delete this item?"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "overallProgress": "Overall progress",
+    "nextFive": "Next 5 pending items",
+    "alerts": "Reminders",
+    "noAlerts": "No active reminders.",
+    "reminderTitle": "Immigration reminder"
+  },
+  "tasks": {
+    "title": "Task workflow",
+    "openCategory": "Open",
+    "closeCategory": "Close",
+    "targetDate": "Target date",
+    "notes": "Notes",
+    "reminders": "Reminder offsets",
+    "noDate": "No date",
+    "categories": {
+      "changeAddress": { "title": "Change legal address" },
+      "permesso": { "title": "Permesso di soggiorno" },
+      "marriage": { "title": "Marriage registration" }
+    },
+    "subtasks": {
+      "addressDocs": { "title": "Prepare address documents", "detail": "Collect rental contract, ID, and supporting declarations." },
+      "addressAppointment": { "title": "Attend Anagrafe appointment", "detail": "Book and attend the municipality residency appointment." },
+      "addressConfirmation": { "title": "Track residency confirmation", "detail": "Set expected date for police check or confirmation letter." },
+      "permessoKit": { "title": "Prepare permesso kit", "detail": "Assemble postal kit, photocopies, photos, and payment slips." },
+      "permessoPost": { "title": "Submit kit at post office", "detail": "Submit the envelope and save tracking/receipt details." },
+      "permessoQuestura": { "title": "Questura fingerprints appointment", "detail": "Save appointment date and required documents for biometrics." },
+      "marriageCertificates": { "title": "Collect marriage certificates", "detail": "Gather legalized translations and civil status documents." },
+      "marriageAppointment": { "title": "Comune marriage transcript appointment", "detail": "Set appointment date for marriage registration at Comune." },
+      "marriageTranscript": { "title": "Confirm transcript completion", "detail": "Track completion date and collect updated certificates." }
     }
   },
   "appointments": {
-    "title": "Appointments",
     "add": "Add appointment",
-    "exportAll": "Export all as ICS",
-    "exportOne": "Export ICS",
     "none": "None",
-    "maps": "Map",
-    "website": "Website",
-    "phone": "Phone",
-    "reminders": "Reminders",
     "fields": {
       "title": "Title",
       "office": "Office",
@@ -35,20 +61,42 @@
       "mapsLink": "Maps link",
       "phone": "Phone",
       "website": "Website",
-      "reminders": "Reminder offsets (minutes, comma-separated)"
+      "reminders": "Reminder offsets (7d,1d,2h)"
     }
+  },
+  "calendar": {
+    "title": "Calendar & timeline",
+    "empty": "No dated appointments or subtasks yet.",
+    "call": "Call",
+    "map": "Map",
+    "website": "Website",
+    "exportOne": "Export ICS",
+    "exportAll": "Export all events ICS",
+    "reminders": "Reminders"
   },
   "documents": {
     "title": "Document vault",
     "add": "Add document",
-    "number": "Number",
     "issueDate": "Issue date",
     "expiryDate": "Expiry date",
-    "notes": "Notes",
+    "linkedTask": "Linked task",
+    "file": "File",
+    "openFile": "Open file",
+    "noFile": "No file",
+    "empty": "No documents in this view.",
+    "filter": "Filter by task",
+    "filterAll": "All tasks",
+    "unlinked": "Unlinked",
     "expired": "Expired",
     "expiringSoon": "Expiring in {days} days",
     "valid": "Valid for {days} more days",
     "expiryUnknown": "Expiry date unknown",
+    "messages": {
+      "metadataOnly": "Saved metadata only.",
+      "localOnly": "Supabase unavailable. Stored metadata locally.",
+      "uploaded": "Document uploaded to Supabase storage.",
+      "uploadFailed": "Upload failed. Metadata saved locally."
+    },
     "dashboard": {
       "total": "Total documents",
       "expired": "Expired",
@@ -56,23 +104,42 @@
       "expiring30": "Expiring in 30 days"
     },
     "fields": {
-      "title": "Document title",
-      "category": "Category",
-      "number": "Document number",
-      "issueDate": "Issue date",
-      "expiryDate": "Expiry date",
-      "notes": "Notes"
+      "name": "Document name",
+      "category": "Category"
     }
   },
-  "nextActions": {
-    "title": "Next 3 actions",
-    "allClear": "All clear — no urgent actions right now.",
-    "rules": {
-      "expiredDoc": "Renew expired document: {doc}",
-      "expiringDoc": "Prepare renewal for {doc} (expires in {days} days)",
-      "noAppointments": "Book your next required office appointment.",
-      "addReminder": "Add reminders for upcoming appointment: {title}",
-      "pendingTask": "Complete checklist task: {task}"
+  "learning": {
+    "title": "Learning progress",
+    "save": "Save learning progress",
+    "progress": "Lessons"
+  },
+  "settings": {
+    "title": "Settings & sync",
+    "workspaceId": "Workspace ID",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign in",
+    "signUp": "Create account",
+    "signOut": "Sign out",
+    "syncNow": "Sync now",
+    "enableNotifications": "Enable notifications",
+    "exportBackup": "Export JSON backup",
+    "messages": {
+      "supabaseMissing": "Supabase env not configured. Running in local mode.",
+      "supabaseReady": "Supabase configured. Sign in to sync.",
+      "supabaseLoadError": "Unable to load Supabase client.",
+      "signedIn": "Signed in.",
+      "signedOut": "Signed out.",
+      "signUpCheckEmail": "Account created. Check your email for confirmation.",
+      "authError": "Authentication error",
+      "syncNeedsAuth": "Sign in before syncing.",
+      "syncSuccess": "Sync complete.",
+      "syncError": "Sync failed",
+      "notificationsGranted": "Notifications enabled.",
+      "notificationsDenied": "Notifications not granted.",
+      "importConfirm": "Import backup and merge with current data?",
+      "importSuccess": "Backup imported successfully.",
+      "importError": "Failed to import backup."
     }
   }
 }

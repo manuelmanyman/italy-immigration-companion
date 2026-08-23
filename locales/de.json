@@ -5,50 +5,98 @@
     "install": "Installieren",
     "disclaimer": "Nur zu Informationszwecken. Keine Rechtsberatung."
   },
-  "common": {
-    "delete": "Löschen"
+  "nav": {
+    "dashboard": "Dashboard",
+    "tasks": "Aufgaben",
+    "calendar": "Kalender",
+    "documents": "Dokumente",
+    "learning": "Lernen",
+    "settings": "Einstellungen"
   },
-  "checklist": {
-    "title": "Einwanderungs-Checkliste",
-    "tasks": {
-      "registerAddress": { "title": "Wohnsitz anmelden (Anagrafe)", "detail": "Reiche die Wohnsitzerklärung bei der Gemeinde ein." },
-      "applyTaxCode": { "title": "Codice fiscale beantragen", "detail": "Beantrage die italienische Steuernummer bei der Agenzia delle Entrate." },
-      "bookResidencePermit": { "title": "Termin für Aufenthaltstitel buchen", "detail": "Buche und bereite den Antrag für den Aufenthaltstitel vor." },
-      "healthcareEnrollment": { "title": "Im Gesundheitssystem anmelden", "detail": "Bei Anspruch beim SSN/ASL registrieren." },
-      "openBankAccount": { "title": "Italienisches Bankkonto eröffnen", "detail": "Ausweis, Steuernummer und Wohnsitznachweis mitbringen." }
+  "common": {
+    "delete": "Löschen",
+    "empty": "Noch keine Einträge.",
+    "confirmDelete": "Diesen Eintrag löschen?"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "overallProgress": "Gesamtfortschritt",
+    "nextFive": "Nächste 5 offenen Punkte",
+    "alerts": "Erinnerungen",
+    "noAlerts": "Keine aktiven Erinnerungen.",
+    "reminderTitle": "Einwanderungs-Erinnerung"
+  },
+  "tasks": {
+    "title": "Aufgaben-Workflow",
+    "openCategory": "Öffnen",
+    "closeCategory": "Schließen",
+    "targetDate": "Zieldatum",
+    "notes": "Notizen",
+    "reminders": "Erinnerungsabstände",
+    "noDate": "Kein Datum",
+    "categories": {
+      "changeAddress": { "title": "Rechtliche Adresse ändern" },
+      "permesso": { "title": "Permesso di soggiorno" },
+      "marriage": { "title": "Eheregistrierung" }
+    },
+    "subtasks": {
+      "addressDocs": { "title": "Adressdokumente vorbereiten", "detail": "Mietvertrag, Ausweis und nötige Erklärungen sammeln." },
+      "addressAppointment": { "title": "Anagrafe-Termin wahrnehmen", "detail": "Gemeindetermin zur Wohnsitzanmeldung buchen und wahrnehmen." },
+      "addressConfirmation": { "title": "Wohnsitzbestätigung verfolgen", "detail": "Erwartetes Datum für Kontrolle oder Bestätigungsbrief setzen." },
+      "permessoKit": { "title": "Permesso-Unterlagen vorbereiten", "detail": "Post-Kit, Kopien, Fotos und Gebührenbelege vorbereiten." },
+      "permessoPost": { "title": "Unterlagen bei der Post abgeben", "detail": "Umschlag einreichen und Beleg/Tracking sichern." },
+      "permessoQuestura": { "title": "Questura-Fingerabdrucktermin", "detail": "Termin und benötigte Unterlagen für Biometrics speichern." },
+      "marriageCertificates": { "title": "Heiratsunterlagen sammeln", "detail": "Legalisierte Übersetzungen und Personenstandsdokumente bereitstellen." },
+      "marriageAppointment": { "title": "Comune-Termin zur Eintragung", "detail": "Termin für die Eheregistrierung im Comune eintragen." },
+      "marriageTranscript": { "title": "Abschluss der Eintragung bestätigen", "detail": "Abschlussdatum nachverfolgen und neue Urkunden abholen." }
     }
   },
   "appointments": {
-    "title": "Termine",
     "add": "Termin hinzufügen",
-    "exportAll": "Alle als ICS exportieren",
-    "exportOne": "ICS exportieren",
     "none": "Keine",
-    "maps": "Karte",
-    "website": "Webseite",
-    "phone": "Telefon",
-    "reminders": "Erinnerungen",
     "fields": {
       "title": "Titel",
-      "office": "Amt",
+      "office": "Behörde",
       "address": "Adresse",
       "mapsLink": "Kartenlink",
       "phone": "Telefon",
       "website": "Webseite",
-      "reminders": "Erinnerungsabstände (Minuten, kommagetrennt)"
+      "reminders": "Erinnerungsabstände (7d,1d,2h)"
     }
+  },
+  "calendar": {
+    "title": "Kalender & Zeitleiste",
+    "empty": "Noch keine Termine oder datierten Unteraufgaben.",
+    "call": "Anrufen",
+    "map": "Karte",
+    "website": "Webseite",
+    "exportOne": "ICS exportieren",
+    "exportAll": "Alle Ereignisse als ICS exportieren",
+    "reminders": "Erinnerungen"
   },
   "documents": {
     "title": "Dokumentenablage",
     "add": "Dokument hinzufügen",
-    "number": "Nummer",
     "issueDate": "Ausstellungsdatum",
     "expiryDate": "Ablaufdatum",
-    "notes": "Notizen",
+    "linkedTask": "Verknüpfte Aufgabe",
+    "file": "Datei",
+    "openFile": "Datei öffnen",
+    "noFile": "Keine Datei",
+    "empty": "Keine Dokumente in dieser Ansicht.",
+    "filter": "Nach Aufgabe filtern",
+    "filterAll": "Alle Aufgaben",
+    "unlinked": "Nicht verknüpft",
     "expired": "Abgelaufen",
     "expiringSoon": "Läuft in {days} Tagen ab",
     "valid": "Noch {days} Tage gültig",
     "expiryUnknown": "Ablaufdatum unbekannt",
+    "messages": {
+      "metadataOnly": "Nur Metadaten gespeichert.",
+      "localOnly": "Supabase nicht verfügbar. Metadaten lokal gespeichert.",
+      "uploaded": "Dokument in Supabase Storage hochgeladen.",
+      "uploadFailed": "Upload fehlgeschlagen. Metadaten lokal gespeichert."
+    },
     "dashboard": {
       "total": "Dokumente gesamt",
       "expired": "Abgelaufen",
@@ -56,23 +104,42 @@
       "expiring30": "Ablauf in 30 Tagen"
     },
     "fields": {
-      "title": "Dokumenttitel",
-      "category": "Kategorie",
-      "number": "Dokumentnummer",
-      "issueDate": "Ausstellungsdatum",
-      "expiryDate": "Ablaufdatum",
-      "notes": "Notizen"
+      "name": "Dokumentname",
+      "category": "Kategorie"
     }
   },
-  "nextActions": {
-    "title": "Nächste 3 Aktionen",
-    "allClear": "Alles gut — aktuell keine dringenden Aktionen.",
-    "rules": {
-      "expiredDoc": "Abgelaufenes Dokument erneuern: {doc}",
-      "expiringDoc": "Verlängerung für {doc} vorbereiten (läuft in {days} Tagen ab)",
-      "noAppointments": "Nächsten notwendigen Termin buchen.",
-      "addReminder": "Erinnerungen für bevorstehenden Termin hinzufügen: {title}",
-      "pendingTask": "Checklistenpunkt erledigen: {task}"
+  "learning": {
+    "title": "Lernfortschritt",
+    "save": "Lernfortschritt speichern",
+    "progress": "Lektionen"
+  },
+  "settings": {
+    "title": "Einstellungen & Sync",
+    "workspaceId": "Workspace-ID",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "signIn": "Anmelden",
+    "signUp": "Konto erstellen",
+    "signOut": "Abmelden",
+    "syncNow": "Jetzt synchronisieren",
+    "enableNotifications": "Benachrichtigungen aktivieren",
+    "exportBackup": "JSON-Backup exportieren",
+    "messages": {
+      "supabaseMissing": "Supabase-Umgebung nicht konfiguriert. Lokaler Modus aktiv.",
+      "supabaseReady": "Supabase konfiguriert. Zum Synchronisieren anmelden.",
+      "supabaseLoadError": "Supabase-Client konnte nicht geladen werden.",
+      "signedIn": "Angemeldet.",
+      "signedOut": "Abgemeldet.",
+      "signUpCheckEmail": "Konto erstellt. Bestätigungs-E-Mail prüfen.",
+      "authError": "Authentifizierungsfehler",
+      "syncNeedsAuth": "Vor dem Synchronisieren anmelden.",
+      "syncSuccess": "Synchronisierung abgeschlossen.",
+      "syncError": "Synchronisierung fehlgeschlagen",
+      "notificationsGranted": "Benachrichtigungen aktiviert.",
+      "notificationsDenied": "Benachrichtigungen nicht erlaubt.",
+      "importConfirm": "Backup importieren und mit aktuellen Daten zusammenführen?",
+      "importSuccess": "Backup erfolgreich importiert.",
+      "importError": "Backup konnte nicht importiert werden."
     }
   }
 }
